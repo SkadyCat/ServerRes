@@ -1,0 +1,12 @@
+/home/magic/Server/res/csrc/build/CMakeFiles/rebuild_cache.dir
+/home/magic/Server/res/csrc/build/CMakeFiles/edit_cache.dir
+/home/magic/Server/res/csrc/build/Lua/CMakeFiles/edit_cache.dir
+/home/magic/Server/res/csrc/build/Lua/CMakeFiles/lua5.dir
+/home/magic/Server/res/csrc/build/Lua/CMakeFiles/rebuild_cache.dir
+/home/magic/Server/res/csrc/build/Lua/CMakeFiles/lualib.dir
+/home/magic/Server/res/csrc/build/Help/CMakeFiles/edit_cache.dir
+/home/magic/Server/res/csrc/build/Help/CMakeFiles/rebuild_cache.dir
+/home/magic/Server/res/csrc/build/Help/CMakeFiles/Help.dir
+/home/magic/Server/res/csrc/build/BufferReader/CMakeFiles/rebuild_cache.dir
+/home/magic/Server/res/csrc/build/BufferReader/CMakeFiles/edit_cache.dir
+/home/magic/Server/res/csrc/build/BufferReader/CMakeFiles/BufferReader.dir
