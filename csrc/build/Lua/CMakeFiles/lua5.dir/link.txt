@@ -1,1 +1,0 @@
-/usr/bin/cc   -rdynamic CMakeFiles/lua5.dir/src/lua.c.o  -o lua5  liblualib.a -lm 

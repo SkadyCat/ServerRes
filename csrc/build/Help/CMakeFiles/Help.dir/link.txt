@@ -1,2 +1,0 @@
-/usr/bin/ar qc ../Share/libHelp.a  CMakeFiles/Help.dir/help.cpp.o
-/usr/bin/ranlib ../Share/libHelp.a

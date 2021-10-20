@@ -3,6 +3,7 @@ local skynet = require "skynet"
 require "skynet.manager"
 local harbor = require "skynet.harbor"
 
+local bf = require "BufferReader"
 -- 启动服务(启动函数)
 skynet.start(function()
     local address = skynet.newservice("service/loginService")
