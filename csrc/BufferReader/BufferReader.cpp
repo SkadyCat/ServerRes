@@ -209,9 +209,6 @@ static int Encode(lua_State* L) {
 	for (int i = 0; i < buf.size(); i++) {
 		rbuf += buf[i];
 	}
-	cout << "the buf len " << rbuf.size() << endl;
-	logString(rbuf);
-
 	lua_pushlstring(L, rbuf.c_str(),rbuf.size());
 	return 1;
 }
@@ -228,14 +225,9 @@ static int Read(lua_State * L) {
 	buffer* bf = (buffer*)lua_touserdata(L, 1);
 	const char* buf = luaL_checkstring(L, 2);
 	int len = luaL_checkinteger(L, 3);
-	cout << len << endl;
 	for (int i = 0; i < len; i++) {
 		bf->dq.push_front(buf[i]);
 	}
-	for (int i = 0; i < len; i++) {
-		cout << (int)buf[i] << ",";
-	}
-	cout << endl;
 	return 0;
 }
 
@@ -263,11 +255,8 @@ static string GetString(buffer* bf) {
 	{
 		lenBytes[i] = bf->dq.back();
 		stk.push(bf->dq.back());
-		cout << bf->dq.back() << endl;
-
 		bf->dq.pop_back();
 	}
-	logByte(lenBytes);
 	int dataLen = bytes2Int(lenBytes);
 	if (dataLen > bf->dq.size()) {
 		//需要回档
@@ -285,8 +274,6 @@ static string GetString(buffer* bf) {
 	}
 	string protoName;
 	protoName.assign(dataBytes.begin(), dataBytes.end());
-	cout << "--"<<dataLen << endl;
-	logByte(dataBytes);
 	//lua_pushstring(L, protoName.c_str());
 	return protoName;
 }
@@ -308,8 +295,6 @@ static string GetMsg(buffer* bf) {
 		bf->dq.pop_back();
 	}
 	int dataLen = bytes2Int(lenBytes);
-	cout << dataLen << "," << bf->dq.size() << endl;
-
 	if (dataLen > bf->dq.size()) {
 		//需要回档
 		//回档就是将4,3,2,1塞入back
@@ -317,7 +302,6 @@ static string GetMsg(buffer* bf) {
 			bf->dq.push_back(stk.top());
 			stk.pop();
 		}
-		cout << "re success"<<bf->dq.size() << endl;
 		return "";
 	}
 
@@ -336,12 +320,10 @@ static string GetMsg(buffer* bf) {
 
 static int GetProto(lua_State * L) {
 	buffer* bf = (buffer*)lua_touserdata(L, 1);
-	cout << "get proto" << endl;
 	string buf = "";
 	if (bf->name == "") {
 		bf->name = GetString(bf);
 		string tp = bf->name;
-		cout << "get proto"<< tp << endl;
 		//说明读取name失败，等待写入
 		if (bf->name.size() == 0) {
 			return 0;
@@ -349,8 +331,6 @@ static int GetProto(lua_State * L) {
 		buf = GetMsg(bf);
 		if (buf.size() == 0) {
 			//说明回档
-			cout << "re success ........" << endl;
-
 			return 0;
 		}
 		//说明读取buf成功,写入到lua栈
