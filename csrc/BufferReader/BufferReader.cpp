@@ -129,6 +129,40 @@ vector<char> int2Bytes(int v)
 }
 
 
+/*
+接收参数：
+	pos0: buffer对象
+	pos1: 接收的bytes
+	pos2: 接收的byte的长度
+返回参数：
+	无
+*/
+
+static int log(lua_State * L) {
+	const char* buf = luaL_checkstring(L, 1);
+	int len = luaL_checkinteger(L, 2);
+	cout << "logByte:";
+	for (int i = 0; i < len; i++) {
+		cout << (int)buf[i] << ",";
+	}
+	cout << endl;
+	return 0;
+}
+static void logByte(vector<char> data) {
+	cout << "logByte:";
+	for (auto k : data) {
+		cout << (int)k << ",";
+	}
+	cout << endl;
+}
+static void logString(string data) {
+	cout << "logString:";
+	for (auto k : data) {
+		cout << (int)k << ",";
+	}
+	cout << endl;
+}
+
 struct buffer {
 
 	deque<char> dq;
@@ -151,6 +185,34 @@ struct buffer {
 //unordered_map<string,>
 
 
+static int Encode(lua_State* L) {
+	string name = luaL_checkstring(L, 1);
+	int nameLen = luaL_checkinteger(L, 2);
+	string buf = luaL_checkstring(L, 3);
+	int bufLen = luaL_checkinteger(L, 4);
+	vector<char> nameLenBytes = int2Bytes(nameLen);
+	vector<char> bufLenBytes = int2Bytes(bufLen);
+	int sumLen = nameLenBytes.size() + bufLenBytes.size() + name.size() + buf.size();
+	int index = 0;
+	string rbuf = "";
+	for (int i = 0; i < nameLenBytes.size();i++) {
+		rbuf += nameLenBytes[i];
+	}
+	for (int i = 0; i < name.size(); i++) {
+		rbuf += name[i];
+	}
+	for (int i = 0; i < bufLenBytes.size(); i++) {
+		rbuf += bufLenBytes[i];
+	}
+	for (int i = 0; i < buf.size(); i++) {
+		rbuf += buf[i];
+	}
+	cout << "the buf len " << rbuf.size() << endl;
+	logString(rbuf);
+
+	lua_pushlstring(L, rbuf.c_str(),rbuf.size());
+	return 1;
+}
 
 static int New(lua_State* L){
 	buffer* buf = new buffer();
@@ -160,33 +222,6 @@ static int New(lua_State* L){
 	return 1;
 }
 
-/*
-接收参数：
-	pos0: buffer对象
-	pos1: 接收的bytes
-	pos2: 接收的byte的长度
-返回参数：
-	无
-*/
-
-static int log(lua_State * L) {
-	buffer* bf = (buffer*)lua_touserdata(L, 1);
-	const char* buf = luaL_checkstring(L, 2);
-	int len = luaL_checkinteger(L, 3);
-	cout << "logByte:";
-	for (int i = 0; i < len; i++) {
-		cout << (int)buf[i] << ",";
-	}
-	cout << endl;
-	return 0;
-}
-static void logByte(vector<char> data) {
-	cout << "logByte:";
-	for (auto k : data) {
-		cout << (int)k << ",";
-	}
-	cout << endl;
-}
 static int Read(lua_State * L) {
 	buffer* bf = (buffer*)lua_touserdata(L, 1);
 	const char* buf = luaL_checkstring(L, 2);
@@ -286,8 +321,8 @@ static int GetMsg(lua_State * L) {
 		bf->dq.pop_back();
 	}
 	string v = "";
-	for (auto k : dataBytes) {
-		v += (char)k;
+	for (int i = 0; i < dataBytes.size();i++) {
+		v += (char)dataBytes[i];
 	}
 	lua_pushstring(L, v.c_str());
 	return 1;
@@ -397,6 +432,7 @@ static luaL_Reg luaLibs[] =
 	{"getString",GetString},
 	{"getMsg",GetMsg},
 	{"log",log},
+	{"encode",Encode},
 	{ NULL, NULL }
 };
 
