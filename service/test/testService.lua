@@ -1,15 +1,17 @@
 local skynet = require "skynet"
 require "skynet.manager"
-local command = {}
-function command.test()
-    print("its a test func")
-end
 
+local command = {}
+function command.DelayReq(msg)
+    return "DelayRet",msg
+end
 skynet.start(function()
-    print("im register service");
     skynet.dispatch("lua", function(session, source, cmd, ...)
         local f = command[cmd]
-        f(...)
+        local head,msg = f(...)
+        if head ~= nil then
+            skynet.retpack(head,msg)
+        end
     end)
-    skynet.register("loginService")
+    skynet.register("testService")
 end)

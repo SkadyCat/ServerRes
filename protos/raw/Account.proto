@@ -10,6 +10,16 @@ message LoginReq {
 	int64 cd = 4;
 }
 
+
+message LoginRet{
+	int32 code = 1;
+	string info = 2;
+	int32 handle = 3;
+}
 message RegisterReq{
 	int32 cd = 1;
+}
+
+message LoginOutReq{
+	int32 code = 1;
 }

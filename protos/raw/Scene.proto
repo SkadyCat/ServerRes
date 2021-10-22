@@ -1,0 +1,15 @@
+
+syntax = "proto3";
+
+option csharp_namespace = "Message.Scene";
+
+message EnterSceneReq {
+    string dst = 1;
+}
+
+message Bro_Test{
+    int32 uid = 1;
+    float x = 2;
+    float y = 3;
+    float z = 4;
+}

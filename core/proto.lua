@@ -8,6 +8,7 @@ end
 local function init()
     register("Account")
     register("Person")
+    register("Test")
 end
 init()
 
