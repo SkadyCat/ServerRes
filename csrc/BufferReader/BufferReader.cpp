@@ -282,11 +282,11 @@ static string GetMsg(buffer* bf) {
 	//buffer* bf = (buffer*)lua_touserdata(L, 1);
 	stack<char> stk;
 	int len = bf->dq.back() + 1;
-	
 	if (len > bf->dq.size()) {
 		//its point that there no enough data in the buffer
 		return "";
 	}
+	
 	vector<char> lenBytes(len + 1);
 	for (int i = 0; i < lenBytes.size(); i++)
 	{
@@ -304,7 +304,9 @@ static string GetMsg(buffer* bf) {
 		}
 		return "";
 	}
-
+	if (dataLen == 0) {
+		return "#";
+	}
 	vector<int> dataBytes(dataLen);
 	for (int i = 0; i < dataBytes.size(); i++) {
 		dataBytes[i] = bf->dq.back();
