@@ -27,6 +27,9 @@ local function new()
         if head == nil then
             return false
         end
+        if msg == "#" then
+            return head,msg
+        end
         local msgTb = proto.decode(head,msg)
         return head,msgTb
     end

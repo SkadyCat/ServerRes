@@ -188,25 +188,30 @@ struct buffer {
 
 
 static int Encode(lua_State* L) {
-	string name = luaL_checkstring(L, 1);
+
+	long unsigned nameLen_t = 0;
+	const char* name = luaL_checkstring(L, 1);
 	int nameLen = luaL_checkinteger(L, 2);
-	string buf = luaL_checkstring(L, 3);
+	
+	long unsigned bufLen_t = 0;
+	const char* buf = luaL_checkstring(L, 3);
+	
 	int bufLen = luaL_checkinteger(L, 4);
 	vector<char> nameLenBytes = int2Bytes(nameLen);
 	vector<char> bufLenBytes = int2Bytes(bufLen);
-	int sumLen = nameLenBytes.size() + bufLenBytes.size() + name.size() + buf.size();
+	int sumLen = nameLenBytes.size() + bufLenBytes.size() + nameLen + bufLen;
 	int index = 0;
 	string rbuf = "";
 	for (int i = 0; i < nameLenBytes.size();i++) {
 		rbuf += nameLenBytes[i];
 	}
-	for (int i = 0; i < name.size(); i++) {
+	for (int i = 0; i < nameLen; i++) {
 		rbuf += name[i];
 	}
 	for (int i = 0; i < bufLenBytes.size(); i++) {
 		rbuf += bufLenBytes[i];
 	}
-	for (int i = 0; i < buf.size(); i++) {
+	for (int i = 0; i < bufLen; i++) {
 		rbuf += buf[i];
 	}
 	lua_pushlstring(L, rbuf.c_str(),rbuf.size());
@@ -223,6 +228,7 @@ static int New(lua_State* L){
 
 static int Read(lua_State * L) {
 	buffer* bf = (buffer*)lua_touserdata(L, 1);
+	cout<<bf->dq.size()<<" == bflen"<<endl;
 	const char* buf = luaL_checkstring(L, 2);
 	int len = luaL_checkinteger(L, 3);
 	for (int i = 0; i < len; i++) {
@@ -241,11 +247,15 @@ static int Read(lua_State * L) {
 */
 
 static string GetString(buffer* bf) {
+	if(bf->dq.size() == 0){
+
+		return "";
+	}
 	//buffer* bf = (buffer*)lua_touserdata(L, 1);
 	stack<char> stk;
 	int len = bf->dq.back() + 1;
 
-	if (len > bf->dq.size()) {
+	if (len+1 > bf->dq.size()) {
 		//its point that there no enough data in the buffer
 		return "";
 	}
@@ -280,13 +290,17 @@ static string GetString(buffer* bf) {
 
 static string GetMsg(buffer* bf) {
 	//buffer* bf = (buffer*)lua_touserdata(L, 1);
+
+	if(bf->dq.size() == 0){
+
+		return "";
+	}
 	stack<char> stk;
 	int len = bf->dq.back() + 1;
-	if (len > bf->dq.size()) {
+	if (len+1 > bf->dq.size()) {
 		//its point that there no enough data in the buffer
 		return "";
 	}
-	
 	vector<char> lenBytes(len + 1);
 	for (int i = 0; i < lenBytes.size(); i++)
 	{
@@ -322,14 +336,23 @@ static string GetMsg(buffer* bf) {
 
 static int GetProto(lua_State * L) {
 	buffer* bf = (buffer*)lua_touserdata(L, 1);
+
+
+	cout<<"bufqLen = "<<bf->dq.size()<<endl;
+	if(bf->dq.size() == 0){
+
+		return 0;
+	}
 	string buf = "";
 	if (bf->name == "") {
+		cout<<"rest1 = string"<<bf->dq.size()<<endl;
 		bf->name = GetString(bf);
 		string tp = bf->name;
 		//说明读取name失败，等待写入
 		if (bf->name.size() == 0) {
 			return 0;
 		}
+		cout<<"rest1 = msg"<<bf->dq.size()<<endl;
 		buf = GetMsg(bf);
 		if (buf.size() == 0) {
 			//说明回档
@@ -339,9 +362,11 @@ static int GetProto(lua_State * L) {
 		lua_pushlstring(L, bf->name.c_str(), bf->name.size());
 		lua_pushlstring(L, buf.c_str(), buf.size());
 		bf->name = "";
+		cout<<"rest1 = "<<bf->dq.size()<<endl;
 		return 2;
 	}
 	else {
+		cout<<"rest2 = msg"<<bf->dq.size()<<endl;
 		buf = GetMsg(bf);
 		if (buf.size() == 0) {
 			//说明回档
@@ -351,6 +376,7 @@ static int GetProto(lua_State * L) {
 		lua_pushlstring(L,bf->name.c_str(),bf->name.size());
 		lua_pushlstring(L,buf.c_str(), buf.size());
 		bf->name = "";
+		cout<<"rest2 = "<<bf->dq.size()<<endl;
 		return 2;
 	}
 }

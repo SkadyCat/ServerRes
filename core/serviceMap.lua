@@ -11,5 +11,6 @@ map["RegisterReq"] = {name = "registerService",ret = 0}
 map["DelayReq"] = {name = "testService",ret = 1}
 map["DelayReq"] = {name = "testService",ret = 1}
 
+map["MoveReq"] = {name = "sceneService",ret = 1}
 
 return map

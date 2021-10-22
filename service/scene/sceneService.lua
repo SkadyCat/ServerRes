@@ -14,23 +14,30 @@ function command.BroadCast(msg)
     
 end
 
+function command.MoveReq(msg)
+    print(msg.pos.x)
+    local tp = {id = msg.uid,pos = msg.pos,timeStamp = msg.timeStamp}
+    return "MoveRet",tp;
+end
 skynet.start(function()
     skynet.dispatch("lua", function(session, source, cmd, ...)
         -- 在这里进行转接
         local prefix = ""
         if #cmd > 4 then
-            prefix = cmd[1]+cmd[2]+cmd[3]
+            prefix = string.sub(cmd,1,4)
+            print(prefix)
         end
         if prefix == "Bro_" then
 
         else
             local f = command[cmd]
+            local head,msg = f(...)
+            if head ~= nil then
+                skynet.retpack(head,msg)
+            end
         end
         
-        local head,msg = f(...)
-        if head ~= nil then
-            skynet.retpack(head,msg)
-        end
+        
     end)
     skynet.register("sceneService")
 end)

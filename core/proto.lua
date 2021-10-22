@@ -9,6 +9,7 @@ local function init()
     register("Account")
     register("Person")
     register("Test")
+    register("Scene")
 end
 init()
 
