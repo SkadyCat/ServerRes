@@ -55,17 +55,15 @@ SET_TARGET_PROPERTIES(${LRiman_LIBRARY} PROPERTIES FOLDER "Navigation")
 
 #install(TARGETS ${LAOI_LIBRARY} DESTINATION "${MODULE_INSTALL_PATH}")
 target_link_libraries(${LRiman_LIBRARY} DebugUtils Detour DetourCrowd DetourTileCache Recast lualib Help)
+set_target_properties(${LRiman_LIBRARY} PROPERTIES PREFIX "")
 
 IF (CMAKE_SYSTEM_NAME MATCHES "Linux")
-	set_target_properties(${LRiman_LIBRARY} PROPERTIES PREFIX "")
-	
 	#target_link_libraries(${LRiman_LIBRARY} DebugUtils Detour DetourCrowd DetourTileCache Recast lualib Help)
 
-	set(LIBRARY_OUTPUT_PATH /home/magic/skynets/skynet/luaclib)
+	set(LIBRARY_OUTPUT_PATH /home/magic/Server/res/clib)
 ENDIF (CMAKE_SYSTEM_NAME MATCHES "Linux")
 
 IF (CMAKE_SYSTEM_NAME MATCHES "Windows")
-	set_target_properties(${LRiman_LIBRARY} PROPERTIES PREFIX "")
 	set(LIBRARY_OUTPUT_PATH ../../Share)
 	set(EXECUTABLE_OUTPUT_PATH ../../Share)
 	#target_link_libraries(${LRiman_LIBRARY})
