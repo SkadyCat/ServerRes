@@ -1,5 +1,5 @@
 
-è
+ô
 raw/Account.proto"P
 LoginReq
 name (	Rname
@@ -11,6 +11,8 @@
 info (	Rinfo
 handle (Rhandle"
 RegisterReq
-cd (Rcd"!
-LoginOutReq
-code (RcodeB™Message.Accountbproto3
+cd (Rcd"
+LoginOutReq"
+
+ConnectRet
+id (RidB™Message.Accountbproto3

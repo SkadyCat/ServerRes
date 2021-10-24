@@ -228,7 +228,6 @@ static int New(lua_State* L){
 
 static int Read(lua_State * L) {
 	buffer* bf = (buffer*)lua_touserdata(L, 1);
-	cout<<bf->dq.size()<<" == bflen"<<endl;
 	const char* buf = luaL_checkstring(L, 2);
 	int len = luaL_checkinteger(L, 3);
 	for (int i = 0; i < len; i++) {
@@ -336,23 +335,19 @@ static string GetMsg(buffer* bf) {
 
 static int GetProto(lua_State * L) {
 	buffer* bf = (buffer*)lua_touserdata(L, 1);
-
-
-	cout<<"bufqLen = "<<bf->dq.size()<<endl;
+	
 	if(bf->dq.size() == 0){
 
 		return 0;
 	}
 	string buf = "";
 	if (bf->name == "") {
-		cout<<"rest1 = string"<<bf->dq.size()<<endl;
 		bf->name = GetString(bf);
 		string tp = bf->name;
 		//说明读取name失败，等待写入
 		if (bf->name.size() == 0) {
 			return 0;
 		}
-		cout<<"rest1 = msg"<<bf->dq.size()<<endl;
 		buf = GetMsg(bf);
 		if (buf.size() == 0) {
 			//说明回档
@@ -362,11 +357,9 @@ static int GetProto(lua_State * L) {
 		lua_pushlstring(L, bf->name.c_str(), bf->name.size());
 		lua_pushlstring(L, buf.c_str(), buf.size());
 		bf->name = "";
-		cout<<"rest1 = "<<bf->dq.size()<<endl;
 		return 2;
 	}
 	else {
-		cout<<"rest2 = msg"<<bf->dq.size()<<endl;
 		buf = GetMsg(bf);
 		if (buf.size() == 0) {
 			//说明回档
@@ -376,7 +369,6 @@ static int GetProto(lua_State * L) {
 		lua_pushlstring(L,bf->name.c_str(),bf->name.size());
 		lua_pushlstring(L,buf.c_str(), buf.size());
 		bf->name = "";
-		cout<<"rest2 = "<<bf->dq.size()<<endl;
 		return 2;
 	}
 }

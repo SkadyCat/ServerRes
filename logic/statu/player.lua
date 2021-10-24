@@ -4,7 +4,6 @@ local proto = require "proto"
 local module = {}
     local socket = require "skynet.socket"
     function module.new(uid)
-
         local player = {}
         player.uid = uid
         player.pos = vec3.Vector3D(0,0,0)
@@ -34,7 +33,7 @@ local module = {}
             local rBuf = proto.encode(name,msg)
             socket.write(self.uid,rBuf)
         end
-        
+
         return player
     end
 return module

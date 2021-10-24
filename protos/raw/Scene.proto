@@ -3,15 +3,52 @@ syntax = "proto3";
 
 option csharp_namespace = "Message.Scene";
 
-message EnterSceneReq {
-    string dst = 1;
+
+message QryScenesReq{
+    
 }
+message QryScenesRet{
+    repeated string scenes = 1;
+}
+
+message QryScenePlayerReq{
+
+}
+
+message QryScenePlayerRet{
+    repeated int32 ids = 1;
+}
+message EnterSceneReq {
+    string sceneName = 1;//进入场景名
+}
+message EnterSceneRet{
+    string sceneName = 1;//进入场景名称
+    int32 code = 2;//进入是否成功
+}
+
 message Vec3{
     float x = 1;
     float y = 2;
     float z = 3;
 }
-message Bro_TestReq{
+message Vec4{
+    float x = 1;
+    float y = 2;
+    float z = 3;
+    float w = 4;
+}
+message Vec2{
+    float x = 1;
+    float y = 2;
+}
+message TestBro{
+    int32 uid = 1;
+    float x = 2;
+    float y = 3;
+    float z = 4;
+}
+
+message TestBroRet{
     int32 uid = 1;
     float x = 2;
     float y = 3;
@@ -29,3 +66,43 @@ message MoveRet{
     int64 timeStamp = 3;
 }
 
+message SceneInfoBroRet{
+    repeated int32 users = 1;
+}
+
+message NewUserEnterBroRet{
+    int32 id = 1;
+}
+
+message UserLeaveBroRet{
+    int32 id = 1;
+}
+
+
+message MoveBro{
+    int32 id = 1;
+    Vec3 pos = 2;
+    int64 timeStamp = 3;
+}
+
+message MoveBroRet{
+    int32 id = 1;
+    Vec3 pos = 2;
+    int64 timeStamp = 3;
+}
+
+message SetPosReq{
+
+    Vec3 pos = 1;
+    Vec4 rotAxis = 2;
+    Vec2 moveAxis = 3;
+    int64 timeStamp = 4;
+}
+
+message SetPosRet{
+    Vec3 pos = 1;
+    Vec4 rotAxis = 2;
+    Vec2 moveAxis = 3;
+    int32 id = 4;
+    int64 timeStamp = 5;
+}

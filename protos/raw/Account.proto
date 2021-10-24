@@ -21,5 +21,8 @@ message RegisterReq{
 }
 
 message LoginOutReq{
-	int32 code = 1;
+}
+
+message ConnectRet{
+	int32 id = 1;
 }

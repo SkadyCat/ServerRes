@@ -1,20 +1,65 @@
 local scene = require "scene/scene"
+local module = {}
 local sceneMap = {}
-local playerSceneMap = {}
-function sceneMap.init()
+
+local user_sceneMap = {}
+
+function module.init()
     local sc = scene.new("TestLab")
     sceneMap["TestLab"] = sc
 end
 
-function sceneMap.move(uid,dst)
-    print("move to world")
-    local isInMap = playerSceneMap[uid]
-    if isInMap then
-        playerSceneMap[uid]:leave(uid)
-        sceneMap[dst]:enter(uid)
-    else
-        sceneMap[dst]:enter(uid)
+function module.leave(uid)
+    local sceneName = user_sceneMap[uid]
+    if sceneName then
+        sceneMap[sceneName]:leave(uid)
+        user_sceneMap[uid] = nil
     end
 end
-sceneMap.init()
-return sceneMap
+function module.queryScenes()
+    local tp = {}
+    for j,v in pairs(sceneMap) do
+        table.insert(tp,j)
+    end
+    local rq = {scenes = tp}
+    return rq
+end
+
+function module.queryPlayers(uid)
+    local sceneName = user_sceneMap[uid]
+    if sceneName == nil then
+        return nil
+    end
+    local scene = sceneMap[sceneName]
+    local players = scene:queryPlayers()
+    return players
+end
+
+function module.broadCast(name,msg)
+    local uid = msg.uid
+    msg.uid = nil
+    local sc = sceneMap["TestLab"]
+    sc:broadCast((name.."Ret"),msg)
+end
+function module.setScene(uid,sceneName)
+    local isInMap = sceneMap[sceneName]:query(uid)
+
+    if isInMap then
+        sceneMap[sceneName]:leave(uid)
+        sceneMap[sceneName]:enter(uid)
+    else
+        sceneMap[sceneName]:enter(uid)
+    end
+    user_sceneMap[uid] = sceneName
+    return {sceneName = sceneName,code = 1}
+end
+
+function module.setPos(uid,msg)
+    local sceneName = user_sceneMap[uid]
+    if sceneName then
+        local sc = sceneMap[sceneName]
+        sc:setPos(uid,msg)
+    end
+end
+module.init()
+return module
