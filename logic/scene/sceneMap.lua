@@ -51,7 +51,7 @@ function module.setScene(uid,sceneName)
         sceneMap[sceneName]:enter(uid)
     end
     user_sceneMap[uid] = sceneName
-    return {sceneName = sceneName,code = 1}
+    return sceneMap[sceneName]
 end
 
 function module.setPos(uid,msg)
@@ -60,6 +60,14 @@ function module.setPos(uid,msg)
         local sc = sceneMap[sceneName]
         sc:setPos(uid,msg)
     end
+end
+
+function module.getScene(uid)
+    local sceneName = user_sceneMap[uid]
+    if sceneName == nil then
+        return false
+    end
+    return sceneMap[sceneName]
 end
 module.init()
 return module

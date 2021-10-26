@@ -6,7 +6,7 @@ require "skynet.manager"
 local harbor = require "skynet.harbor"
 local serviceMap = require "net/serviceMap"
 local bf = require "buffer"
-
+local json = require "json"
 local module = {}
     function module.new(uid)
         local user = {}
@@ -31,6 +31,7 @@ local module = {}
                             local tb = serviceMap[head]
                             local serviceName = tb.name
                             local serviceAddress =  harbor.queryname(serviceName)
+                            
                             if msg == "#" then
                                 msg = {}
                                 msg.uid = id
@@ -80,6 +81,7 @@ local module = {}
         end
         
         function user:send(name,msg)
+            -- print(name..json.encode(msg))
             local tBuf = self.buffer.encode(name,msg)
             -- self.buf = self.buf .. tBuf
             socket.write(self.uid,tBuf)

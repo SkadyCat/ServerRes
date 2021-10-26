@@ -50,7 +50,7 @@ vector<Vector3> Scene::findPath(float begin[3], float end[3])
 
 	for (int i = 0; i < sp.m_nsmoothPath; i++)
 	{
-		Vector3 v3(sp.m_smoothPath[i * 3], sp.m_smoothPath[i * 3+1], sp.m_smoothPath[i * 3 + 2]);
+		Vector3 v3(-sp.m_smoothPath[i * 3], sp.m_smoothPath[i * 3+1], sp.m_smoothPath[i * 3 + 2]);
 		tp.push_back(v3);
 	}
 	return tp;

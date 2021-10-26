@@ -1,7 +1,7 @@
 local skynet = require "skynet"
 require "skynet.manager"
 local sceneMap = require "scene/sceneMap"
-
+local json = require "json"
 
 local command = {}
 
@@ -34,11 +34,35 @@ end
 function command.SetPosReq(msg)
     sceneMap.setPos(msg.uid,msg)
 end
+function command.SetRotReq(msg)
+    local scene = sceneMap.getScene(msg.uid)
+    scene:setRot(msg.uid,msg)
+end
+
+function command.TestFindPathReq(msg)
+    print(json.encode(msg))
+    local sc = sceneMap.getScene(msg.uid)
+    if sc then
+        local paths = sc:findPath(msg.bginPos,msg.endPos)
+        local tp = {paths = paths}
+        return "TestFindPathRet",tp
+    end
+end
+
 --非协议内部调用
+
+function command.init(uid,sceneName)
+    local sc = sceneMap.setScene(uid,sceneName)
+end
+
 function command.leaveScene(msg)
     
     sceneMap.leave(msg.uid)
+end
 
+function command.broadCast(uid,head,msg)
+    local sc = sceneMap.getScene(uid)
+    sc:broadCast(head,msg)
 end
 
 

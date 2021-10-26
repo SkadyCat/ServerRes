@@ -47,12 +47,19 @@ static void addVector3Arr(lua_State* L, vector<Vector3>& vsp) {
 
 static int findPath(lua_State * L) {
 	Scene* sc = (Scene*)lua_touserdata(L, 1);
-	lua_remove(L, 1);
-	sdmap v1 = checkTable(L);
-	sdmap v2 = checkTable(L);
-	Vector3 v3(v1["x"],v1["y"],v1["z"]);
-	Vector3 v4(v2["x"],v2["y"],v2["z"]);
+	float x1 = -luaL_checknumber(L,2);
+	float y1 = luaL_checknumber(L,3);
+	float z1 = luaL_checknumber(L,4);
+	float x2 = luaL_checknumber(L,5);
+	float y2 = luaL_checknumber(L,6);
+	float z2 = luaL_checknumber(L,7);
+	Vector3 v3(x1,y1,z1);
+	Vector3 v4(x2,y2,z2);
+
 	vector<Vector3> v5 = sc->findPath(v3, v4);
+	// cout << v3.x << " " << v3.y << " " << v3.z << endl;
+	// cout << v4.x << " " << v4.y << " " << v4.z << endl;
+	// cout<<"the path size = "<<v5.size()<<endl;
 	addVector3Arr(L, v5);
 	return 1;
 }
@@ -77,7 +84,7 @@ extern "C"  __declspec(dllexport) int luaopen_NavCore(lua_State * L)
 #endif
 
 #if __linux__
-extern "C"  int luaopen_BufferReader(lua_State * L)
+extern "C"  int luaopen_NavCore(lua_State * L)
 {
 	lua_newtable(L);
 	luaL_setfuncs(L, luaLibs, 0);

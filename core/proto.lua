@@ -1,5 +1,5 @@
 
-local protoPath = "/home/magic/Server/res/protos/pb/"
+local protoPath = "/home/magic/Server/res/static/protos/pb/"
 local pb = require "protobuf" 
 
 local function register(name)
@@ -9,6 +9,7 @@ local function init()
     register("Account")
     register("Test")
     register("Scene")
+    register("Skill")
 end
 init()
 

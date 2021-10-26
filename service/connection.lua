@@ -10,11 +10,7 @@ local userMap = {}
 local command = {}
 local json = require "json"
 local function hash(uid)
-
     return "#"..uid
-end
-function command.close(uid)
-    skynet.send(userMap[hash(uid)],"lua","send","close",uid)
 end
 
 function command.broadCast(tb,name,msg)
@@ -25,17 +21,13 @@ function command.broadCast(tb,name,msg)
     end
 end
 
-function command.LoginOutReq(msg)
-    
-    --通知场景，清空角色信息
-    local serviceName = "sceneService"
-    local serviceAddress =  harbor.queryname(serviceName)
-    skynet.send(serviceAddress,"lua","leaveScene",msg)
+function command.send(uid,head,msg)
+    skynet.send(userMap[hash(uid)],"lua","send",head,msg)
+end
 
-    --关闭角色服务
-    serviceAddress = userMap[hash(msg.uid)]
-    skynet.send(serviceAddress,"lua","close",msg.uid)
-    
+function command.close(uid)
+    local serviceAddress = userMap[hash(uid)]
+    skynet.send(serviceAddress,"lua","close",uid)
 end
 
 skynet.start(function()

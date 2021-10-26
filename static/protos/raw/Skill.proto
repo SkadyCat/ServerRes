@@ -1,0 +1,26 @@
+syntax = "proto3";
+option csharp_namespace = "Message.Skill";
+import "Scene.proto";
+
+message SkillTestReq {
+    int32 id = 1;
+    Vec3 pos = 2;
+    Vec3 dir = 3;
+}
+
+message SkillTestRet {
+    int32 id = 1;
+    Vec3 pos = 2;
+    Vec3 dir = 3;
+    int32 uid = 4;
+}
+
+message SkillElementChangeBro{
+    int32 type = 1;
+}
+
+message SkillElementChangeBroRet{
+    int32 type = 1;
+    int32 uid = 4;
+}
+

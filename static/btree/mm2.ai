@@ -1,0 +1,11 @@
+    SEL:有仇恨
+        CON:有仇恨:haveHate
+        SEL:接近玩家
+            CON:没有接近玩家:noClosePlayer:0.5
+            ACT:接近玩家
+        SEL:攻击玩家
+            CON:冷却结束了:CDOver
+            ACT:攻击玩家:AtkPlayer
+        SEL:等待冷却
+            CON:冷却没有结束:noCDOver
+            ACT:降低冷却:downCD

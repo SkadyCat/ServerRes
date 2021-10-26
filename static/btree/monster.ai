@@ -1,0 +1,22 @@
+SEL:AI
+    SEQ:原地待机
+        CON:没有仇恨:noHate
+        SEL:寻找路径
+            CON:有目标点:haveDst
+            CON:没有路径:noPath
+            ACT:寻找路径:findPath
+        SEL:前往目标点
+            CON:有目标点:haveDst
+            CON:有路径:havePath
+            CON:没有接近目标点:noArriveDst
+            ACT:移动到目标点:goDst
+        SEL:寻找新的目标点
+            CON:有目标点:haveDst
+            CON:到达目标点:arriveDst
+            ACT:移除之前的路径:clearPath
+            ACT:随便找一个目标点:findRandomDst
+        SEL:随便获取一个目标点
+            CON:没有目标点:noDst
+            ACT:随便找一个目标点:findRandomDst
+
+        
