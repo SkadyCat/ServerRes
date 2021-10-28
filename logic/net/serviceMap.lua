@@ -28,8 +28,10 @@ map["TestBro"] = {name = "sceneService",ret = 2}
 
 --skillService
 map["SkillTestReq"] = {name = "skillService",ret = 2}
-
+map["SkillReleaseReq"] = {name = "skillService",ret = 2}
 --skillService.Bro
 map["SkillElementChangeBro"] = {name = "skillService",ret = 2}
-
+map["SkillReleaseBro"] = {name = "skillService",ret = 2}
+map["SkillDestroyBro"] = {name = "skillService",ret = 2}
+map["SkillAniBro"] = {name = "skillService",ret = 2}
 return map

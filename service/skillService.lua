@@ -14,6 +14,12 @@ end
 function command.SkillBroadcast(head,msg)
     scene.broadCast(msg.uid,head.."Ret",msg)
 end
+local index = 0
+function command.SkillReleaseReq(msg)
+    msg.index = index
+    index = index+1
+    scene.broadCast(msg.uid,"SkillReleaseBroRet",msg)
+end
 
 --内部调用
 function command.init(uid,scene)
@@ -38,9 +44,7 @@ skynet.start(function()
         end
         local f = command[cmd]
         local head,msg = f(...)
-        if msg then
-            scene.broadCast(msg.uid,head,msg)
-        end
+        
         skynet.retpack(head,msg)
     end)
     skynet.register("skillService")

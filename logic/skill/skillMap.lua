@@ -7,6 +7,20 @@ function module.new(uid,scene)
     skillObj.id = uid
     skillObj.scene = scene
     skillMap[uid] = skillObj
+    skillObj.cd = {}
+    
+    function skillObj:getCD(id)
+        return self.cd[id]
+    end
+
+    function skillObj: setCD(id,cd)
+        self.cd[id] = skynet.time()
+    end
+
+    function skillObj:judgeCD(id)
+
+    end
+    return skillMap[uid]
 end
 
 function module.clear(uid)

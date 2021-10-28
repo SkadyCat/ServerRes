@@ -24,3 +24,44 @@ message SkillElementChangeBroRet{
     int32 uid = 4;
 }
 
+message SkillReleaseBro{
+    int32 type = 1;
+    Vec3 pLayerPos = 2;
+    Vec3 targetPos = 3;
+}
+
+message SkillReleaseReq{
+    int32 type = 1;
+    Vec3 pLayerPos = 2;
+    Vec3 targetPos = 3;
+}
+
+message SkillReleaseBroRet{
+    int32 type = 1;
+    Vec3 pLayerPos = 2;
+    Vec3 targetPos = 3;
+    int32 uid = 4;
+    int32 index = 5;
+}
+
+message SkillAniBro{
+    Vec3 dstPos = 1;
+}
+
+message SkillAniBroRet{
+    int32 uid = 1;
+    Vec3 dstPos = 2;
+}
+
+message SkillDestroyBro{
+    int32 id = 1;
+    int32 index = 2;
+}
+
+message SkillDestroyBroRet{
+    int32 id = 1;
+    int32 uid = 2; 
+    int32 index = 3; 
+}
+
+
