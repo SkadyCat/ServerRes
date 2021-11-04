@@ -1,0 +1,7 @@
+id,name,itemTypeID,icon,quality,level,desc,sellCurr,overlayLimit,script,ItemCD
+1001,新手铲子,1100,T_Icon_Pickaxe_1,1,1,初始的新手装备,1000,1,,
+1002,危险火枪,1100,T_Icon_Pistol_001,2,5,进阶的新手装备,2000,1,,
+2001,小血瓶,2100,T_Icon_RedDrink,0,0,恢复固定生命,500,10,AddBuff_100402,500
+2002,小蓝瓶,2100,T_Icon_BlueDrink,0,0,恢复固定法力,500,10,AddBuff_100502,500
+3001,树叶,3100,T_Icon_PalmLeaf,0,0,用于制作的材料,100,10,,
+3002,纤维,3100,T_Icon_Fiber,0,0,用于制作的材料,100,10,,

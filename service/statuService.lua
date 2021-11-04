@@ -1,31 +1,60 @@
 local skynet = require "skynet"
 require "skynet.manager"
 local harbor = require "skynet.harbor"
-local playerMap = require "statu/playerMap"
+local statuMap = require "statu/statuMap"
+local scene = require "scene/sceneHelp"
+local user = require "net/userHelp"
 
 local command = {}
 
 --外部接口
-function command.SetPosReq(msg)
-    
+function command.SetHpReq(msg)
+    local statu = statuMap.get(msg.uid)
+    statu:setHp(msg.hp)
+    scene.broadCast(msg.uid,"SetHpRet",msg)
 end
 
-
+function command.SetMpReq(msg)
+    local statu = statuMap.get(msg.uid)
+    statu:setMp(msg.mp)
+    scene.broadCast(msg.uid,"SetMpRet",msg)
+end
 
 --内部调用
-function command.addPlayer(msg)
-    playerMap.addPlayer(msg.uid)
+
+function command.init(uid)
+    statuMap.new(uid)
+
 end
 
-function command.removePlayer(msg)
-    playerMap.removePlayer(msg.uid)
+function command.onEnterScene(uid,players)
+    local role = statuMap.get(uid)
+    local tp = {
+        hp = role.statu.hp,
+        mp = role.statu.mp,
+        maxMp = role.statu.maxMp,
+        maxHp = role.statu.maxHp        
+    }
+    tp.uid = uid
+    scene.broadCast(uid,"StatuInitRet",tp)
+
+    for k,v in pairs(players) do
+        role = statuMap.get(k)
+        tp = {
+            hp = role.statu.hp,
+            mp = role.statu.mp,
+            maxMp = role.statu.maxMp,
+            maxHp = role.statu.maxHp        
+        }
+        tp.uid = k
+        user.send(uid,"StatuInitRet",tp)
+    end
 end
 
-function command.LoginOutReq(msg)
-    print("loginOut"..msg.uid)
-    local serviceAddress =  harbor.queryname("connection")
-    skynet.send(serviceAddress,"lua","close",msg.uid)
+function command.onLeave(uid)
+    statuMap.remove(uid)
 end
+
 skynet.start(function()
     skynet.dispatch("lua", function(session, source, cmd, ...)
         local f = command[cmd]
@@ -34,5 +63,5 @@ skynet.start(function()
             skynet.retpack(head,msg)
         end
     end)
-    skynet.register("loginService")
+    skynet.register("statuService")
 end)

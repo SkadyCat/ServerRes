@@ -1,7 +1,7 @@
 
 local json = require "json"
 local module = {}
-    function module.new(uid,scene)
+    function module.new(uid,scene,userInfo)
         local item = {}
         item.uid = uid
         item.pos = {x = 0,y = 0,z =0}
@@ -9,6 +9,7 @@ local module = {}
         item.paths = {}
         item.index = 1
         item.scene = scene
+        item.userInfo = userInfo
         
         function item:setPos(pos)
             self.pos = pos

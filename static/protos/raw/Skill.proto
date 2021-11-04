@@ -34,6 +34,7 @@ message SkillReleaseReq{
     int32 type = 1;
     Vec3 pLayerPos = 2;
     Vec3 targetPos = 3;
+    Vec3 lookDir = 4;
 }
 
 message SkillReleaseBroRet{
@@ -42,6 +43,7 @@ message SkillReleaseBroRet{
     Vec3 targetPos = 3;
     int32 uid = 4;
     int32 index = 5;
+    Vec3 lookDir = 6;
 }
 
 message SkillAniBro{
@@ -51,6 +53,17 @@ message SkillAniBro{
 message SkillAniBroRet{
     int32 uid = 1;
     Vec3 dstPos = 2;
+}
+
+message SkillAnimReq{
+    int32 type = 1;
+    Vec3 dstPos = 2;
+}
+message SkillAnimRet{
+    int32 uid = 1;
+    Vec3 dstPos = 2;
+    int32 cdRet = 3;
+    int32 type = 4;
 }
 
 message SkillDestroyBro{

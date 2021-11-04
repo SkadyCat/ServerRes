@@ -1,17 +1,21 @@
 
-•
-Account.proto"P
-LoginReq
-name (	Rname
-psd (	Rpsd
-id (Rid
-cd (Rcd"J
+Ÿ
+Account.proto"@
+LoginReq
+user_acc (	RuserAcc
+user_pwd (	RuserPwd"j
 LoginRet
 code (Rcode
-info (	Rinfo
-handle (Rhandle"
-RegisterReq
-cd (Rcd"
+info (	Rinfo
+user_acc (	RuserAcc
+	nick_name (	RnickName"`
+RegisterReq
+user_acc (	RuserAcc
+user_pwd (	RuserPwd
+	nick_name (	RnickName"5
+RegisterRet
+code (Rcode
+info (	Rinfo"
 LoginOutReq"
 
 ConnectRet

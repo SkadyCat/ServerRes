@@ -294,6 +294,12 @@ static string GetMsg(buffer* bf) {
 
 		return "";
 	}
+
+	if(bf->dq.size() > 300){
+
+		cout<<"err: "<<bf->dq.size()<<endl;
+	}
+	
 	stack<char> stk;
 	int len = bf->dq.back() + 1;
 	if (len+1 > bf->dq.size()) {

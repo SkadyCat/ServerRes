@@ -18,13 +18,25 @@ message QryScenePlayerReq{
 message QryScenePlayerRet{
     repeated int32 ids = 1;
 }
+
 message EnterSceneReq {
     string sceneName = 1;//进入场景名
+    string nickName = 2;
+    string userAcc = 3;
 }
+
 message EnterSceneRet{
     string sceneName = 1;//进入场景名称
     int32 code = 2;//进入是否成功
 }
+
+message BornPlayerRet{
+    int32 id = 1;
+    string nickName = 2;
+    string userAcc = 3;
+    Vec3 playerPos = 4;
+}
+
 
 message Vec3{
     float x = 1;
@@ -143,5 +155,13 @@ message AnimSyncReq{
 message AnimSyncRet{
     Vec3 pos = 1;
     int32 id = 2;
+}
+
+message MoveAnimBro{
+    
+}
+
+message MoveAnimBroRet{
+    int32 uid = 1;
 }
 

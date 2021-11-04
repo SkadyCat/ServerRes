@@ -10,6 +10,8 @@ local function init()
     register("Test")
     register("Scene")
     register("Skill")
+    register("Statu")
+    register("Bag")
 end
 init()
 

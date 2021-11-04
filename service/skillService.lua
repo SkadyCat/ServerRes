@@ -18,12 +18,22 @@ local index = 0
 function command.SkillReleaseReq(msg)
     msg.index = index
     index = index+1
+    local item = skillMap.get(msg.uid)
+    item:setCD(msg.type)
     scene.broadCast(msg.uid,"SkillReleaseBroRet",msg)
 end
 
+function command.SkillAnimReq(msg)
+    local id = msg.type
+    local uid = msg.uid
+    local item = skillMap.get(uid)
+    local ans = item:judgeCD(id)
+    msg.cdRet = ans
+    scene.broadCast(msg.uid,"SkillAnimRet",msg)
+end
 --内部调用
 function command.init(uid,scene)
-
+    
     skillMap.new(uid,scene)
 end
 

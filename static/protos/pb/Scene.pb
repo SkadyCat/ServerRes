@@ -1,17 +1,24 @@
 
-ø
+Ý
 Scene.proto"
 QryScenesReq"&
 QryScenesRet
 scenes (	Rscenes"
 QryScenePlayerReq"%
 QryScenePlayerRet
-ids (Rids"-
+ids (Rids"c
 EnterSceneReq
-	sceneName (	R	sceneName"A
+	sceneName (	R	sceneName
+nickName (	RnickName
+userAcc (	RuserAcc"A
 EnterSceneRet
 	sceneName (	R	sceneName
-code (Rcode"0
+code (Rcode"z
+BornPlayerRet
+id (Rid
+nickName (	RnickName
+userAcc (	RuserAcc#
+	playerPos (2.Vec3R	playerPos"0
 Vec3
 x (Rx
 y (Ry
@@ -87,4 +94,7 @@ MoveBroRet
 id (Rid"6
 AnimSyncRet
 pos (2.Vec3Rpos
-id (RidBªMessage.Scenebproto3
+id (Rid"
+MoveAnimBro""
+MoveAnimBroRet
+uid (RuidBªMessage.Scenebproto3

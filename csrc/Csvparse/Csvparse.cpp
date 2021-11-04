@@ -12,6 +12,8 @@ extern "C"
 	#include "lauxlib.h"  
 }
 const std::string WHITESPACE = " \n\r\t\f\v";
+
+
 static std::string ltrim(const std::string &s)
 {
 	size_t start = s.find_first_not_of(WHITESPACE);

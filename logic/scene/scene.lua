@@ -13,21 +13,37 @@ local module = {}
         scene.playerMap = {}
         scene.broadCastMap = {}
         scene.nav = navApi.new(sceneName)
-        -- print(scene.nav)
-        -- print("hello world")
         scene.monsterMap = robot.new(scene,1)
-        function scene:enter(uid)
-            self.playerMap[uid] = item.new(uid,self)
+        function scene:enter(uid,userInfo)
+            self.playerMap[uid] = item.new(uid,self,userInfo)
             self.broadCastMap[uid] = true
-            scene:broadCast("NewUserEnterBroRet",{id =uid})
             
-            -- 广播怪物信息
+
+            local uInfo = self.playerMap[uid]
+            scene:broadCast("BornPlayerRet",{id =uid,nickName = uInfo.userInfo.nickName,userAcc = uInfo.userInfo.userAcc})
+            
+            -- 获取场景的怪物信息
             for k,v in pairs(self.monsterMap) do
                 scene:send(uid,"MonsterGenRet",{id = k,pos = v.model.param.pos})
             end
+            --获取场景的玩家信息
+            for k,v in pairs(self.playerMap) do
+                uInfo = v
+                print(json.encode(uInfo.userInfo))
+                scene:send(uid,"BornPlayerRet",{id =v.uid,nickName = uInfo.userInfo.nickName,userAcc = uInfo.userInfo.userAcc})
+            end
 
             -- 广播当前场景中的玩家消息
-            scene:broadCast("QryScenePlayerRet",{ids = scene:queryPlayers()})
+            -- scene:broadCast("QryScenePlayerRet",{ids = scene:queryPlayers()})
+
+            --各个服务的场景初始化
+
+            --状态服务的初始化
+            local serviceName = "statuService"
+            local serviceAddress =  harbor.queryname(serviceName)
+            skynet.send(serviceAddress,"lua","onEnterScene",uid,self.broadCastMap)
+            
+            
 
 
         end

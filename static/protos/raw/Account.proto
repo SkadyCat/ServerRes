@@ -4,20 +4,25 @@ syntax = "proto3";
 option csharp_namespace = "Message.Account";
 
 message LoginReq {
-	string name = 1;
-	string psd = 2;
-	int32 id = 3;
-	int64 cd = 4;
+	string user_acc = 1;
+	string user_pwd = 2;
 }
 
 
 message LoginRet{
 	int32 code = 1;
 	string info = 2;
-	int32 handle = 3;
+	string user_acc = 3;
+	string nick_name = 4;
 }
 message RegisterReq{
-	int32 cd = 1;
+	string user_acc = 1;
+	string user_pwd = 2;
+	string nick_name = 3;
+}
+message RegisterRet{
+	int32 code = 1;
+	string info = 3;
 }
 
 message LoginOutReq{

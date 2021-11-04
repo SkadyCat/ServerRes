@@ -7,8 +7,11 @@ local command = {}
 
 function command.EnterSceneReq(msg)
     print("enter scene")
-    local sceneInfo = sceneMap.setScene(msg.uid,msg.sceneName)
-    return "EnterSceneRet",msg
+    local userInfo = {}
+    userInfo.userAcc = msg.userAcc
+    userInfo.nickName = msg.nickName
+    local sceneInfo = sceneMap.setScene(msg.uid,msg.sceneName,userInfo)
+    
 end
 
 
@@ -51,9 +54,9 @@ end
 
 --非协议内部调用
 
-function command.init(uid,sceneName)
-    local sc = sceneMap.setScene(uid,sceneName)
-end
+-- function command.init(uid,sceneName)
+--     local sc = sceneMap.setScene(uid,sceneName)
+-- end
 
 function command.leaveScene(msg)
     

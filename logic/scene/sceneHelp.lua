@@ -9,4 +9,5 @@ function module.broadCast(uid,head,msg)
     skynet.send(serviceAddress,"lua","broadCast",uid,head,msg)
 end
 
+
 return module

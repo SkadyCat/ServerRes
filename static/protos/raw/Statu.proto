@@ -1,0 +1,30 @@
+
+syntax = "proto3";
+option csharp_namespace = "Message.Statu";
+
+message SetHpReq{
+    int32 hp = 1;
+}
+
+message SetHpRet{
+    int32 hp = 1;
+    int32 uid = 2;
+}
+
+message SetMpReq{
+    int32 mp = 1;
+}
+
+message SetMpRet{
+    int32 mp = 1;
+    int32 uid = 2;
+}
+
+message StatuInitRet{
+    int32 mp = 1;
+    int32 uid = 2;
+    int32 hp = 3;
+    int32 atk = 4;
+    int32 maxHp = 5;
+    int32 maxMp = 6;
+}

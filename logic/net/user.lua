@@ -29,6 +29,9 @@ local module = {}
                                 break
                             end
                             local tb = serviceMap[head]
+                            if tb == nil then
+                                error("no proto ..."..head)
+                            end
                             local serviceName = tb.name
                             local serviceAddress =  harbor.queryname(serviceName)
                             
@@ -82,9 +85,11 @@ local module = {}
         
         function user:send(name,msg)
             -- print(name..json.encode(msg))
+
             local tBuf = self.buffer.encode(name,msg)
             -- self.buf = self.buf .. tBuf
             socket.write(self.uid,tBuf)
+            
         end
         skynet.fork(user.echo)
         -- timer.start(user.update,1)

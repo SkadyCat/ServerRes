@@ -117,24 +117,8 @@ static void addArray(lua_State* L, vector<string>& data) {
 
 void addVectorArr(lua_State* L, vector<sdmap>& vsp);
 
-void addVectorArr2v(lua_State* L, vector<unordered_map<string, string>>& vsp) {
-	lua_newtable(L);
-	int i = 1;
-	for (int i = 0; i < vsp.size(); i++)
-	{
-		lua_pushnumber(L, i);
-		lua_newtable(L);
-		unordered_map<string, string>& map = vsp[i];
-		unordered_map<string, string>::iterator it = map.begin();
-		while (it != map.end()) {
-			lua_pushstring(L, it->first.c_str());
-			lua_pushstring(L, it->second.c_str());
-			lua_settable(L, -3);
-			it++;
-		}
-		lua_settable(L, -3);
-	}
-}
+void addVectorArr2v(lua_State* L, vector<unordered_map<string, string>>& vsp);
+
 static void addBuffer(lua_State* L, vector<char>& vsp) {
 
 	char* data = new char[vsp.size()];

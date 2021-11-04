@@ -37,18 +37,18 @@ end
 
 function module.broadCast(name,msg)
     local uid = msg.uid
-    msg.uid = nil
+    -- msg.uid = nil
     local sc = sceneMap["TestLab"]
     sc:broadCast((name.."Ret"),msg)
 end
-function module.setScene(uid,sceneName)
+function module.setScene(uid,sceneName,userInfo)
     local isInMap = sceneMap[sceneName]:query(uid)
 
     if isInMap then
         sceneMap[sceneName]:leave(uid)
-        sceneMap[sceneName]:enter(uid)
+        sceneMap[sceneName]:enter(uid,userInfo)
     else
-        sceneMap[sceneName]:enter(uid)
+        sceneMap[sceneName]:enter(uid,userInfo)
     end
     user_sceneMap[uid] = sceneName
     return sceneMap[sceneName]
