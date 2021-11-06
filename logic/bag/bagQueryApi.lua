@@ -19,6 +19,7 @@ function command.pull(_character_id)
         end
         tp = mysql.execute(bagEvent.pullBag,_character_id)
     end
+    print(json.encode(tp))
     return tp
 end
 

@@ -107,7 +107,6 @@ end
 -- 登录时初始化
 function command.bagInit(_character_id)
 
-    print("init the bag.....")
     local data = bag_data.bagQueryApi.pull(_character_id)
     local bag = bagObj.createBag(_character_id)
     bag_data.bags[_character_id] = bag

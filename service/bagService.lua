@@ -34,7 +34,6 @@ end
 -- 外部接口
 function command.BagPullReq(msg)
     local data = bag.BagPullRequest(msg.user_acc,msg)
-    print("------------------"..json.encode(data))
     return "BagPullRet",data
 end
 

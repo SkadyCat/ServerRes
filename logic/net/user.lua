@@ -31,10 +31,14 @@ local module = {}
                             local tb = serviceMap[head]
                             if tb == nil then
                                 error("no proto ..."..head)
+                                break
                             end
                             local serviceName = tb.name
                             local serviceAddress =  harbor.queryname(serviceName)
-                            
+                            if not msg then
+                                error("the err proto :"..head)
+                                break
+                            end
                             if msg == "#" then
                                 msg = {}
                                 msg.uid = id
