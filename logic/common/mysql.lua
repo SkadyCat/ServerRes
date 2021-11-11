@@ -37,4 +37,13 @@ function module.bagEvent()
 
 end
 
+function module.sceneEvent()
+
+    local sv = {}
+    -- sv.init = module.db:prepare("insert into scene(user_acc,x,y,z) values(?,?,?,?)")
+    -- sv.pull = module.db:
+    return sv
+end
+
+
 return module

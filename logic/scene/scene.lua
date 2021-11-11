@@ -51,6 +51,11 @@ local module = {}
         function scene:leave(uid)
             self.playerMap[uid] = nil
             self.broadCastMap[uid] = nil
+            local num = 0
+            for k,v in pairs(self.playerMap) do
+                num = num+1
+            end
+            print("player leave "..uid.."rest: "..num)
             scene:broadCast("UserLeaveBroRet",{id =uid})
         end
         

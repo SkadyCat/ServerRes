@@ -2,11 +2,9 @@
 local userApi = require "login/user"
 local userMap = {}
 
-function userMap.add(uid,acc)
-    local nUser = userApi.new(uid,acc)
-    nUser:init()
-    userMap[uid] = nUser
-    return nUser
+function userMap.add(uid,info)
+    userMap[uid] = info
+    return info
 end
 
 function userMap.remove(uid)

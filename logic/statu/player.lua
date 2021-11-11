@@ -13,7 +13,7 @@ local module = {}
             self.pos:setY(pos.y)
             self.pos:setZ(pos.z)
         end
-
+        
         function player:getPos()
             local tp = {x = self.pos:getX(),y = self.pos:getY(),z = self.pos:getZ()}
             return tp

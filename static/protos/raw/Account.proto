@@ -26,6 +26,7 @@ message RegisterRet{
 }
 
 message LoginOutReq{
+	string user_acc = 1;
 }
 
 message ConnectRet{

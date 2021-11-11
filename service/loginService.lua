@@ -3,18 +3,23 @@ require "skynet.manager"
 
 local harbor = require "skynet.harbor"
 local userMap = require "login/userMap"
-local mysql = require "common/mysql"
+local mysql = require "mysql/mysqlHelp"
 local json = require "json"
 local code = require "common/code"
-local db = nil
 local command = {}
 
 function command.LoginReq(msg)
     
-    --初始化信息
-    local info = mysql.execute(mysql.event.user_info.login,msg.user_acc)
-    print(json.encode(info))
     local tp = {}
+
+    if userMap.get(msg.user_acc) ~= nil then
+        print("have login")
+        tp.code = code.FAILED
+        tp.info = "have login"
+        return "LoginRet",tp
+    end
+    --初始化信息
+    local info = mysql.query("loginEvent","login",msg.user_acc)
     if #info ~= 0 then
         data = info[1]
         if data.user_pwd ~= msg.user_pwd then
@@ -32,20 +37,14 @@ function command.LoginReq(msg)
     end
 
     -- 查询当前所在场景
-    local user = userMap.add(msg.uid,"123")
+    local user = userMap.add(msg.user_acc,info[1])
     user.user_acc = msg.user_acc
-    -- 场景服务初始化
-    -- local serviceName = "sceneService"
-    -- local serviceAddress =  harbor.queryname(serviceName)
-    -- skynet.send(serviceAddress,"lua","init",user.uid,user.sceneName)
-    
+
     -- 技能服务初始化
     local serviceName = "skillService"
     local serviceAddress =  harbor.queryname(serviceName)
     skynet.send(serviceAddress,"lua","init",msg.uid)
     
-    -- 背包服务初始化
-
     --状态服务初始化
     serviceName = "statuService"
     serviceAddress =  harbor.queryname(serviceName)
@@ -68,13 +67,21 @@ end
 
 function command.LoginOutReq(msg)
 
-    local userInfo = userMap[msg.uid]
+    if msg.user_acc == nil then
+        --关闭链接
+        serviceName = "connection"
+        serviceAddress = harbor.queryname(serviceName)
+        skynet.send(serviceAddress,"lua","close",msg.uid)
+        return
+    end
+
+    local userInfo = userMap.get(msg.user_acc)
     --通知场景，清空角色信息
     local serviceName = "sceneService"
     local serviceAddress =  harbor.queryname(serviceName)
     skynet.send(serviceAddress,"lua","leaveScene",msg)
 
-    --关闭角色服务
+    --关闭链接
     serviceName = "connection"
     serviceAddress = harbor.queryname(serviceName)
     skynet.send(serviceAddress,"lua","close",msg.uid)
@@ -82,21 +89,16 @@ function command.LoginOutReq(msg)
     serviceName = "bagService"
     serviceAddress = harbor.queryname(serviceName)
     skynet.send(serviceAddress,"lua","bagOffline",userInfo.user_acc)
-
+    
+    userMap.remove(msg.user_acc)
 end
 
 function command.RegisterReq(msg)
-
-    print("注册请求...................")
-    local data = mysql.execute(mysql.event.user_info.register,msg.user_acc,msg.user_pwd,msg.nick_name)
+    local data = mysql.query("loginEvent","register",msg.user_acc,msg.user_pwd,msg.nick_name)
     local rBack = {}
     if not data.err then
         rBack.code = code.SUCCESS
         rBack.info = "注册成功"
-
-
-    
-
     else
         rBack.code = code.FAILED
         rBack.info = "注册失败"
@@ -106,8 +108,6 @@ end
 
 
 skynet.start(function()
-    db = mysql.connect()
-
     skynet.dispatch("lua", function(session, source, cmd, ...)
         local f = command[cmd]
         local head,msg = f(...)

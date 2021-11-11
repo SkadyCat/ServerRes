@@ -132,7 +132,6 @@ function command.bagInit(_character_id)
 end
 -- 离线操作
 function command.bagOffline(_character_id)
-    print("off line :".._character_id)
     bag_data.bagQueryApi.push(_character_id,bag_data.bags[_character_id])
     bag_data.bags[_character_id] = nil
 end

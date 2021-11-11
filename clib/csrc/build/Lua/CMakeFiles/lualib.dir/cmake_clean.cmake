@@ -1,0 +1,42 @@
+file(REMOVE_RECURSE
+  "/home/magic/Server/res/clib/liblualib.a"
+  "/home/magic/Server/res/clib/liblualib.pdb"
+  "CMakeFiles/lualib.dir/src/lapi.c.o"
+  "CMakeFiles/lualib.dir/src/lauxlib.c.o"
+  "CMakeFiles/lualib.dir/src/lbaselib.c.o"
+  "CMakeFiles/lualib.dir/src/lbitlib.c.o"
+  "CMakeFiles/lualib.dir/src/lcode.c.o"
+  "CMakeFiles/lualib.dir/src/lcorolib.c.o"
+  "CMakeFiles/lualib.dir/src/lctype.c.o"
+  "CMakeFiles/lualib.dir/src/ldblib.c.o"
+  "CMakeFiles/lualib.dir/src/ldebug.c.o"
+  "CMakeFiles/lualib.dir/src/ldo.c.o"
+  "CMakeFiles/lualib.dir/src/ldump.c.o"
+  "CMakeFiles/lualib.dir/src/lfunc.c.o"
+  "CMakeFiles/lualib.dir/src/lgc.c.o"
+  "CMakeFiles/lualib.dir/src/linit.c.o"
+  "CMakeFiles/lualib.dir/src/liolib.c.o"
+  "CMakeFiles/lualib.dir/src/llex.c.o"
+  "CMakeFiles/lualib.dir/src/lmathlib.c.o"
+  "CMakeFiles/lualib.dir/src/lmem.c.o"
+  "CMakeFiles/lualib.dir/src/loadlib.c.o"
+  "CMakeFiles/lualib.dir/src/lobject.c.o"
+  "CMakeFiles/lualib.dir/src/lopcodes.c.o"
+  "CMakeFiles/lualib.dir/src/loslib.c.o"
+  "CMakeFiles/lualib.dir/src/lparser.c.o"
+  "CMakeFiles/lualib.dir/src/lstate.c.o"
+  "CMakeFiles/lualib.dir/src/lstring.c.o"
+  "CMakeFiles/lualib.dir/src/lstrlib.c.o"
+  "CMakeFiles/lualib.dir/src/ltable.c.o"
+  "CMakeFiles/lualib.dir/src/ltablib.c.o"
+  "CMakeFiles/lualib.dir/src/ltm.c.o"
+  "CMakeFiles/lualib.dir/src/lundump.c.o"
+  "CMakeFiles/lualib.dir/src/lutf8lib.c.o"
+  "CMakeFiles/lualib.dir/src/lvm.c.o"
+  "CMakeFiles/lualib.dir/src/lzio.c.o"
+)
+
+# Per-language clean rules from dependency scanning.
+foreach(lang C)
+  include(CMakeFiles/lualib.dir/cmake_clean_${lang}.cmake OPTIONAL)
+endforeach()
