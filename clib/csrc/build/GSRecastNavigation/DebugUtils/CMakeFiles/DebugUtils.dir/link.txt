@@ -1,2 +1,0 @@
-/usr/bin/ar qc ../Share/libDebugUtils.a  CMakeFiles/DebugUtils.dir/Source/DebugDraw.cpp.o CMakeFiles/DebugUtils.dir/Source/DetourDebugDraw.cpp.o CMakeFiles/DebugUtils.dir/Source/RecastDebugDraw.cpp.o CMakeFiles/DebugUtils.dir/Source/RecastDump.cpp.o
-/usr/bin/ranlib ../Share/libDebugUtils.a
