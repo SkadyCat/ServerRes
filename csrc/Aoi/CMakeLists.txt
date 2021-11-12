@@ -1,0 +1,61 @@
+set(LAOI_LIBRARY "laoi")
+
+
+set(LAOI_HEADER_FILES
+    ${CMAKE_CURRENT_SOURCE_DIR}/tower/hash.h
+	${CMAKE_CURRENT_SOURCE_DIR}/tower/hash_witness.h
+	${CMAKE_CURRENT_SOURCE_DIR}/tower/khash.h
+	${CMAKE_CURRENT_SOURCE_DIR}/tower/tower-aoi.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/Aoi.h
+	${CMAKE_CURRENT_SOURCE_DIR}/AoiContext.h
+	${CMAKE_CURRENT_SOURCE_DIR}/AoiEntity.h
+	${CMAKE_CURRENT_SOURCE_DIR}/AoiTrigger.h
+	${CMAKE_CURRENT_SOURCE_DIR}/Vector2.h
+	${CMAKE_CURRENT_SOURCE_DIR}/TriggerMarker.h
+)
+
+set(LAOI_SOURCE_FILES
+
+	${CMAKE_CURRENT_SOURCE_DIR}/Aoi.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/AoiContext.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/AoiEntity.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/AoiTrigger.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/Vector2.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/TriggerMarker.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/lua.cpp
+)
+set(LAOI_C_FILES
+	${CMAKE_CURRENT_SOURCE_DIR}/tower/hash.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/tower/hash_witness.c
+	${CMAKE_CURRENT_SOURCE_DIR}/tower/tower-aoi.c
+
+)
+
+include_directories( 
+	#${LUA_INCLUDE_DIR}
+	#${TW2CORE_INCLUDE_DIR}
+	${CMAKE_CURRENT_SOURCE_DIR}
+    ${CMAKE_CURRENT_SOURCE_DIR}/tower
+	../Lua/src
+	../Help
+)
+set(LIBRARY_OUTPUT_PATH ../Share)
+add_library(${LAOI_LIBRARY} SHARED ${LAOI_HEADER_FILES} ${LAOI_SOURCE_FILES} ${LAOI_C_FILES} )
+SET_TARGET_PROPERTIES(${LAOI_LIBRARY} PROPERTIES FOLDER "Aoi")
+#add_executable (TowerTest main.cpp ${LAOI_LIBRARY})
+#set_target_properties(${LAOI_LIBRARY} PROPERTIES LINKER_LANGUAGE C)
+target_link_libraries(${LAOI_LIBRARY} PRIVATE ${LUA_LIBRARY} ${TW2CORE_LIBRARY} lualib Help)
+
+
+#install(TARGETS ${LAOI_LIBRARY} DESTINATION "${MODULE_INSTALL_PATH}")
+
+IF (CMAKE_SYSTEM_NAME MATCHES "Linux")
+	set_target_properties(${LAOI_LIBRARY} PROPERTIES PREFIX "")
+	set(LIBRARY_OUTPUT_PATH /home/magic/Server/res/clib)
+ENDIF (CMAKE_SYSTEM_NAME MATCHES "Linux")
+
+IF (CMAKE_SYSTEM_NAME MATCHES "Windows")
+	set_target_properties(${LAOI_LIBRARY} PROPERTIES PREFIX "")
+	SET(LIBRARY_OUTPUT_PATH ../Share) 
+ENDIF (CMAKE_SYSTEM_NAME MATCHES "Windows")
+
