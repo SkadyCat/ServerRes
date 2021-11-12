@@ -13,7 +13,7 @@ local module = {}
         scene.playerMap = {}
         scene.broadCastMap = {}
         scene.nav = navApi.new(sceneName)
-        scene.monsterMap = robot.new(scene,1)
+        scene.monsterMap = robot.new(scene,10)
         function scene:enter(uid,userInfo)
             self.playerMap[uid] = item.new(uid,self,userInfo)
             self.broadCastMap[uid] = true
@@ -113,6 +113,7 @@ local module = {}
             --         end
             --     end
             -- end
+
         end
         timer.start(scene.update,5)
         return scene

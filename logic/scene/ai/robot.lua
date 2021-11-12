@@ -23,7 +23,7 @@ function module.new(nav,num)
         role.tree = treeApi.new("monster",role.model)
         function role:update(code,msg)
             if code == CODE.MOVE then
-
+                
             elseif code == CODE.ATK then
 
             end
@@ -44,6 +44,7 @@ function module.run()
     for k,v in pairs(monsterMap) do
         v.tree:run()
     end
+
 end
 
 return module

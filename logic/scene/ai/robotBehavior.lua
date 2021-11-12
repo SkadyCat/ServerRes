@@ -55,32 +55,29 @@ function module.new(scene,posSet,id)
         if self.param.dst ~= nil then
             return true
         end
-        -- print("没有目标点")
-
         return false
     end
 
     function rb:noArriveDst()
-        
         local pr = self.param
         if pr.index < #pr.paths then
             return true
         end
         return false
     end
-
+    local lastPos = vec3.new(0,0,0)
     function rb:goDst()
         local pr = self.param
         pr.pos = pr.paths[pr.index]
         pr.index = pr.index+1
         local msg = {id = pr.id,pos = pr.pos}
         scene:broadCast("MonsterPosRet",msg)
-        -- -- print(pr.id.." 前往: "..vec3.toString(self.param.dst).." 当前"..vec3.toString(pr.pos))
+        -- print(pr.id.." 前往: "..vec3.toString(self.param.dst).." 当前"..vec3.toString(pr.pos))
     end
 
     function rb:arriveDst()
         local pr = self.param
-        if pr.index == #pr.paths then
+        if pr.index == #pr.paths or #pr.paths == 0 then
             return true
         end
         return false
