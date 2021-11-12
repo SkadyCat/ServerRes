@@ -59,7 +59,7 @@ if (LUA_USE_DLL)
 	add_library(lualib SHARED ${LUA_SOURCE_LIST})
 	add_definitions(-DLUA_BUILD_AS_DLL)
 else()
-	add_library(lualib STATIC ${LUA_SOURCE_LIST})
+	add_library(lualib SHARED ${LUA_SOURCE_LIST})
 endif()
 
 add_executable(lua5 ${LUA_MAIN_SRC})

@@ -1,46 +1,20 @@
-#pragma once
+#ifndef _AOI_H
+#define _AOI_H
 
-#include "Vector2.h"
-#include "AoiContext.h"
-#include <vector>
-#include <string>
-#include <sstream>
-#include <iomanip>
-using namespace std;
-class Aoi {
-public:
+#include <stdint.h>
+#include <stddef.h>
 
-	Aoi(float x, float z, AoiContext* context);
-	Aoi(float x, float z, float speed, AoiContext* context);
-	~Aoi();
-	int removeID;
-	void RandomTarget();
+typedef void * (*aoi_Alloc)(void *ud, void * ptr, size_t sz);
+typedef void (aoi_Callback)(void *ud, uint32_t watcher, uint32_t marker,int flag);
 
-	void SetTarget(float x, float z);
+struct aoi_space;
 
-	virtual void Enter() = 0;
+struct aoi_space * aoi_create(aoi_Alloc alloc, void *ud);
+struct aoi_space * aoi_new();
+void aoi_release(struct aoi_space *);
 
-	virtual void Update(float interval);
+// w(atcher) m(arker) d(rop)
+void aoi_update(struct aoi_space * space , uint32_t id, const char * mode , float pos[3]);
+void aoi_message(struct aoi_space *space, aoi_Callback cb, void *ud);
 
-	virtual void Draw();
-
-	virtual void Ref(int aim);
-	virtual void DeRef(int aim);
-	virtual void setPos(float x, float z);
-	virtual void refresh();
-	virtual string info();
-public:
-	float m_radius;
-	float m_speed;
-	int m_id;
-	int m_ref;
-	AoiContext* m_context;
-	Vector2 m_pos;
-	Vector2 m_target;
-	std::map<int,int> keys;
-
-	std::map<int, int> entities;
-	std::map<int, int> triggers;
-
-};
-
+#endif
