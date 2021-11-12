@@ -66,6 +66,7 @@ static void message(void *ud, uint32_t watcher, uint32_t marker,int flag) {
 	//);
 	SCENE * sc = (SCENE *)ud;
 	
+	if (sc->items[watcher].flag == 0 || sc->items[marker].flag == 0) return;
 	//if (flag == 1) {
 	//	cout <<"enter: "<< "watcher: " << watcher << "(" << sc->items[watcher].pos[0] << "," <<
 	//		sc->items[watcher].pos[1] << ")" << ", marker: " << marker << "(" <<
