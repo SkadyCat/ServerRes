@@ -11,9 +11,9 @@ extern "C" {
 
 extern "C"
 {
-#include "../Lua/lua.h"  
-#include "../Lua/lualib.h"  
-#include "../Lua/lauxlib.h"  
+#include "lua.h"  
+#include "lualib.h"  
+#include "lauxlib.h"  
 }
 
 class Aoi;
