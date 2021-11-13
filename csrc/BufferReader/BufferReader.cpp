@@ -312,6 +312,8 @@ static string GetMsg(buffer* bf) {
 		return "";
 	}
 
+
+
 	if(bf->dq.size() > 2000){
 
 		cout<<"err: "<<bf->dq.size()<<endl;
