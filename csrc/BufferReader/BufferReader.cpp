@@ -287,6 +287,23 @@ static string GetString(buffer* bf) {
 	return protoName;
 }
 
+static void giveUp(buffer* bf) {
+	int index = 0;
+	while (true) {
+		if (bf->dq.back() == 0) {
+			bf->dq.pop_back();
+			index++;
+		}
+		else
+		{
+			index = 0;
+		}
+		if (index == 6) {
+			break;
+		}
+	}
+}
+
 static string GetMsg(buffer* bf) {
 	//buffer* bf = (buffer*)lua_touserdata(L, 1);
 
@@ -295,9 +312,15 @@ static string GetMsg(buffer* bf) {
 		return "";
 	}
 
-	if(bf->dq.size() > 300){
+	if(bf->dq.size() > 2000){
 
 		cout<<"err: "<<bf->dq.size()<<endl;
+
+		for (int i = 0; i < 300; i++) {
+			cout << bf->dq.back() << ",";
+			bf->dq.pop_back();
+		}
+		cout << endl;
 	}
 	
 	stack<char> stk;
