@@ -140,7 +140,7 @@ public:
 	virtual ~Sample();
 	rcContext* m_ctx;
 	void setContext(rcContext* ctx) { m_ctx = ctx; }
-	
+	static float stepSize;
 	void setTool(SampleTool* tool);
 	SampleToolState* getToolState(int type) { return m_toolStates[type]; }
 	void setToolState(int type, SampleToolState* s) { m_toolStates[type] = s; }

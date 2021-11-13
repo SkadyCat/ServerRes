@@ -37,7 +37,7 @@ unsigned int SampleDebugDraw::areaToCol(unsigned int area)
 {
 	return 0;
 }
-
+float Sample::stepSize = 0.1f;
 Sample::Sample() :
 	m_geom(0),
 	m_navMesh(0),

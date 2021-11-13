@@ -45,6 +45,14 @@ static void addVector3Arr(lua_State* L, vector<Vector3>& vsp) {
 	}
 }
 
+static int setSpeed(lua_State * L) {
+	
+	float sd = luaL_checknumber(L, 1);
+	Sample::stepSize = sd;
+
+	return 0;
+
+}
 static int findPath(lua_State * L) {
 	Scene* sc = (Scene*)lua_touserdata(L, 1);
 	float x1 = -luaL_checknumber(L,2);
@@ -67,6 +75,7 @@ static luaL_Reg luaLibs[] =
 {
 	{"load", load },
 	{"findPath", findPath},
+	{"setSpeed",setSpeed},
 	{ NULL, NULL }
 };
 
