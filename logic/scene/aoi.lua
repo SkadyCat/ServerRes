@@ -23,8 +23,11 @@ local command = {}
 command.msgQueue = {}
 
 local function callBack(watcher,marker,flag)
+
+    if flags[hash(watcher)] == nil then
+        return
+    end
     if flag == 1 then
-       
         if  flags[hash(watcher)][hash(marker)] == false or  flags[hash(watcher)][hash(marker)] == nil then
             flags[hash(watcher)][hash(marker)] = true
             print(index..":"..watcher.."--"..marker.."--"..infos[2])

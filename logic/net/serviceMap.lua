@@ -19,6 +19,8 @@ map["SetPosReq"] = {name = "sceneService",ret = 1}
 map["SetRotReq"] = {name = "sceneService",ret = 1}
 map["TestFindPathReq"] = {name = "sceneService",ret = 1}
 
+map["PlayerAtkMonsterReq"] = {name = "sceneService",ret = 0}
+
 --sceneService.Bro
 map["TestBro"] = {name = "sceneService",ret = 2}
 map["MoveAnimBro"] = {name = "sceneService",ret = 2}

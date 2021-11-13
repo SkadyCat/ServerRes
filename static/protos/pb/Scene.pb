@@ -1,5 +1,5 @@
 
-þ
+®
 Scene.proto"
 QryScenesReq"&
 QryScenesRet
@@ -112,4 +112,20 @@ monster_id (R	monsterId
 watcherType (	RwatcherType
 
 markerType (	R
-markerTypeBªMessage.Scenebproto3
+markerType"3
+MonsterAtkRet
+id (Rid
+type (Rtype";
+PlayerAtkMonsterReq
+id (Rid
+skill (Rskill"D
+MonsterHpRet
+id (Rid
+hp (Rhp
+maxHp (RmaxHp"9
+MonsterDeadRet
+id (Rid
+pos (2.Vec3Rpos";
+MonsterReliveRet
+id (Rid
+pos (2.Vec3RposBªMessage.Scenebproto3

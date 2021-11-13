@@ -10,6 +10,9 @@ local module = {}
             return nav.findPath(self.buf,bpos.x,bpos.y,bpos.z
             ,epos.x,epos.y,epos.z)
         end
+        function naver:setSpeed(v)
+            nav.setSpeed(v)
+        end
         return naver
     end
 -- print("hello world")

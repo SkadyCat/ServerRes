@@ -30,7 +30,7 @@ local module = {}
                             end
                             local tb = serviceMap[head]
                             if tb == nil then
-                                error("no proto ..."..head)
+                                print("no proto ..."..head)
                                 break
                             end
                             local serviceName = tb.name

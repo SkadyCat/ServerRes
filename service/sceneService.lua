@@ -11,9 +11,7 @@ function command.EnterSceneReq(msg)
     userInfo.userAcc = msg.userAcc
     userInfo.nickName = msg.nickName
     local sceneInfo = sceneMap.setScene(msg.uid,msg.sceneName,userInfo)
-    
 end
-
 
 function command.BroadCast(name,msg)
     sceneMap.broadCast(name,msg)
@@ -41,6 +39,12 @@ function command.SetRotReq(msg)
     local scene = sceneMap.getScene(msg.uid)
     scene:setRot(msg.uid,msg)
 end
+
+function command.PlayerAtkMonsterReq(msg)
+    local scene = sceneMap.getScene(msg.uid)
+    scene:monsterEvent(msg)
+end
+
 
 function command.TestFindPathReq(msg)
     print(json.encode(msg))
@@ -87,8 +91,6 @@ skynet.start(function()
             local head,msg = f(...)
             skynet.retpack(head,msg)
         end
-        
-        
     end)
     skynet.register("sceneService")
 end)

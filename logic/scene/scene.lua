@@ -15,13 +15,9 @@ local module = {}
         scene.playerMap = {}
         scene.broadCastMap = {}
         scene.nav = navApi.new(sceneName)
-        scene.monsterMap = robot.new(scene,1)
         scene.aoiMap = {}
         scene.aoi = require "scene/aoi"
         scene.aoi.init(scene)
-
-        
-
         function scene:enter(uid,userInfo)
             self.playerMap[uid] = item.new(uid,self,userInfo)
             self.broadCastMap[uid] = true
@@ -71,7 +67,8 @@ local module = {}
             scene:broadCast("UserLeaveBroRet",{id =uid})
             local msg = {code = "userLeave",value = uid}
             for k,v in pairs(self.monsterMap) do
-                robot.update(k,msg)            end
+                robot.update(k,msg) 
+            end
             self.aoi.remove(uInfo.aoiIndex)
         end
         
@@ -84,6 +81,10 @@ local module = {}
             local serviceName = "connection"
             local serviceAddress =  harbor.queryname(serviceName)
             skynet.send(serviceAddress,"lua","broadCast",self.broadCastMap,head,msg)
+        end
+
+        function scene:setSpeed(v)
+            self.nav:setSpeed(v)
         end
 
         function scene:query(uid)
@@ -121,7 +122,12 @@ local module = {}
             local tp = self.nav:findPath(bPos,ePos)
             return tp
         end
-       
+
+        function scene:monsterEvent(msg)
+            local tp = {code = "playerEvent",value = msg}
+            robot.update(msg.id,tp)
+        end
+        
         function scene.update()
             robot.run()
             for k,v in pairs(scene.monsterMap) do
@@ -157,7 +163,12 @@ local module = {}
             -- end
 
         end
+
+        scene.monsterMap = robot.new(scene,10)
+        
         timer.start(scene.update,5)
+
+
         return scene
     end
     
