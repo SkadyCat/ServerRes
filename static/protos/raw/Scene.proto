@@ -165,3 +165,21 @@ message MoveAnimBroRet{
     int32 uid = 1;
 }
 
+message MonsterHateRet{
+    int32 monster_id = 1;
+    int32 player_id = 2;
+}
+
+message MonsterUpdatePosRet{
+
+    repeated Vec3 pos = 1;
+    int32 id = 2;
+
+}
+message AoiRet{
+    int32 watcher = 1;
+    int32 marker = 2;
+    int32 flag = 3;
+    string watcherType = 4;
+    string markerType = 5;
+}

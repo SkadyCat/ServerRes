@@ -101,6 +101,7 @@ static int add(lua_State* L) {
 }
 
 static int update(lua_State * L) {
+	
 	SCENE* sc = (SCENE*)lua_touserdata(L, 1);
 	int index = luaL_checkinteger(L, 2);
 	OBJECT& item = sc->items[index];
@@ -109,6 +110,8 @@ static int update(lua_State * L) {
 	item.pos[0] = x;
 	item.pos[1] = y;
 	item.pos[2] = 0;
+	cout<<"??--1111111111"<<endl;
+	cout<<"pos:"<<x<<","<<y<<endl;
 	aoi_update(sc->space, index, item.mode, item.pos);
 	aoi_message(sc->space, message, NULL);
 

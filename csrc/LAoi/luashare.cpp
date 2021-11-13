@@ -144,7 +144,7 @@ static int update(lua_State * L) {
 	item.pos[0] = x;
 	item.pos[1] = y;
 	item.pos[2] = 0;
-
+	//cout<<"pos:"<<x<<","<<y<<endl;
 	aoi_update(sc->space, index, item.mode, item.pos);
 	aoi_message(sc->space, message, sc);
 

@@ -5,12 +5,12 @@
 #include <assert.h>
 #include <stdlib.h>
 #include "aoi.h"
-#include <math.h>
+
 #define AOI_RADIS 10.0f
 
 #define INVALID_ID (~0)
 #define PRE_ALLOC 16
-#define AOI_RADIS2 (AOI_RADIS)
+#define AOI_RADIS2 (AOI_RADIS * AOI_RADIS)
 #define DIST2(p1,p2) ((p1[0] - p2[0]) * (p1[0] - p2[0]) + (p1[1] - p2[1]) * (p1[1] - p2[1]) + (p1[2] - p2[2]) * (p1[2] - p2[2]))
 #define MODE_WATCHER 1
 #define MODE_MARKER 2
@@ -74,23 +74,23 @@ new_object(struct aoi_space * space, uint32_t id) {
 }
 
 static inline struct map_slot *
-mainposition(struct map *m , uint32_t id) {
-	uint32_t hash = id & (m->size-1);
+mainposition(struct map *m, uint32_t id) {
+	uint32_t hash = id & (m->size - 1);
 	return &m->slot[hash];
 }
 
 static void rehash(struct aoi_space * space, struct map *m);
 
 static void
-map_insert(struct aoi_space * space , struct map * m, uint32_t id , struct object *obj) {
-	struct map_slot *s = mainposition(m,id);
+map_insert(struct aoi_space * space, struct map * m, uint32_t id, struct object *obj) {
+	struct map_slot *s = mainposition(m, id);
 	if (s->id == INVALID_ID) {
 		s->id = id;
 		s->obj = obj;
 		return;
 	}
 	if (mainposition(m, s->id) != s) {
-		struct map_slot * last = mainposition(m,s->id);
+		struct map_slot * last = mainposition(m, s->id);
 		while (last->next != s - m->slot) {
 			assert(last->next >= 0);
 			last = &m->slot[last->next];
@@ -116,8 +116,8 @@ map_insert(struct aoi_space * space , struct map * m, uint32_t id , struct objec
 			return;
 		}
 	}
-	rehash(space,m);
-	map_insert(space, m, id , obj);
+	rehash(space, m);
+	map_insert(space, m, id, obj);
 }
 
 static void
@@ -128,13 +128,13 @@ rehash(struct aoi_space * space, struct map *m) {
 	m->lastfree = m->size - 1;
 	m->slot = space->alloc(space->alloc_ud, NULL, m->size * sizeof(struct map_slot));
 	int i;
-	for (i=0;i<m->size;i++) {
+	for (i = 0; i < m->size; i++) {
 		struct map_slot * s = &m->slot[i];
 		s->id = INVALID_ID;
 		s->obj = NULL;
 		s->next = -1;
 	}
-	for (i=0;i<old_size;i++) {
+	for (i = 0; i < old_size; i++) {
 		struct map_slot * s = &old_slot[i];
 		if (s->obj) {
 			map_insert(space, m, s->id, s->obj);
@@ -156,17 +156,17 @@ map_query(struct aoi_space *space, struct map * m, uint32_t id) {
 		if (s->next < 0) {
 			break;
 		}
-		s=&m->slot[s->next];
+		s = &m->slot[s->next];
 	}
 	struct object * obj = new_object(space, id);
-	map_insert(space, m , id , obj);
+	map_insert(space, m, id, obj);
 	return obj;
 }
 
 static void
-map_foreach(struct map * m , void (*func)(void *ud, struct object *obj), void *ud) {
+map_foreach(struct map * m, void(*func)(void *ud, struct object *obj), void *ud) {
 	int i;
-	for (i=0;i<m->size;i++) {
+	for (i = 0; i < m->size; i++) {
 		if (m->slot[i].obj) {
 			func(ud, m->slot[i].obj);
 		}
@@ -175,7 +175,7 @@ map_foreach(struct map * m , void (*func)(void *ud, struct object *obj), void *u
 
 static struct object *
 map_drop(struct map *m, uint32_t id) {
-	uint32_t hash = id & (m->size-1);
+	uint32_t hash = id & (m->size - 1);
 	struct map_slot *s = &m->slot[hash];
 	for (;;) {
 		if (s->id == id) {
@@ -186,14 +186,14 @@ map_drop(struct map *m, uint32_t id) {
 		if (s->next < 0) {
 			return NULL;
 		}
-		s=&m->slot[s->next];
+		s = &m->slot[s->next];
 	}
 }
 
 static void
 map_delete(struct aoi_space *space, struct map * m) {
 	space->alloc(space->alloc_ud, m->slot, m->size * sizeof(struct map_slot));
-	space->alloc(space->alloc_ud, m , sizeof(*m));
+	space->alloc(space->alloc_ud, m, sizeof(*m));
 }
 
 static struct map *
@@ -203,7 +203,7 @@ map_new(struct aoi_space *space) {
 	m->size = PRE_ALLOC;
 	m->lastfree = PRE_ALLOC - 1;
 	m->slot = space->alloc(space->alloc_ud, NULL, m->size * sizeof(struct map_slot));
-	for (i=0;i<m->size;i++) {
+	for (i = 0; i < m->size; i++) {
 		struct map_slot * s = &m->slot[i];
 		s->id = INVALID_ID;
 		s->obj = NULL;
@@ -226,7 +226,7 @@ delete_object(void *s, struct object * obj) {
 inline static void
 drop_object(struct aoi_space * space, struct object *obj) {
 	--obj->ref;
-	if (obj->ref <=0) {
+	if (obj->ref <= 0) {
 		map_drop(space->object, obj->id);
 		delete_object(space, obj);
 	}
@@ -241,8 +241,8 @@ set_new(struct aoi_space * space) {
 	return set;
 }
 
-struct aoi_space * 
-aoi_create(aoi_Alloc alloc, void *ud) {
+struct aoi_space *
+	aoi_create(aoi_Alloc alloc, void *ud) {
 	struct aoi_space *space = alloc(ud, NULL, sizeof(*space));
 	space->alloc = alloc;
 	space->alloc_ud = ud;
@@ -273,19 +273,19 @@ delete_set(struct aoi_space *space, struct object_set * set) {
 	space->alloc(space->alloc_ud, set, sizeof(*set));
 }
 
-void 
+void
 aoi_release(struct aoi_space *space) {
 	map_foreach(space->object, delete_object, space);
 	map_delete(space, space->object);
 	delete_pair_list(space);
-	delete_set(space,space->watcher_static);
-	delete_set(space,space->marker_static);
-	delete_set(space,space->watcher_move);
-	delete_set(space,space->marker_move);
+	delete_set(space, space->watcher_static);
+	delete_set(space, space->marker_static);
+	delete_set(space, space->watcher_move);
+	delete_set(space, space->marker_move);
 	space->alloc(space->alloc_ud, space, sizeof(*space));
 }
 
-inline static void 
+inline static void
 copy_position(float des[3], float src[3]) {
 	des[0] = src[0];
 	des[1] = src[1];
@@ -309,7 +309,8 @@ change_mode(struct object * obj, bool set_watcher, bool set_marker) {
 			obj->mode |= MODE_WATCHER;
 			change = true;
 		}
-	} else {
+	}
+	else {
 		if (obj->mode & MODE_WATCHER) {
 			obj->mode &= ~MODE_WATCHER;
 			change = true;
@@ -320,7 +321,8 @@ change_mode(struct object * obj, bool set_watcher, bool set_marker) {
 			obj->mode |= MODE_MARKER;
 			change = true;
 		}
-	} else {
+	}
+	else {
 		if (obj->mode & MODE_MARKER) {
 			obj->mode &= ~MODE_MARKER;
 			change = true;
@@ -331,25 +333,25 @@ change_mode(struct object * obj, bool set_watcher, bool set_marker) {
 
 inline static bool
 is_near(float p1[3], float p2[3]) {
-	return DIST2(p1,p2) < AOI_RADIS2 * 0.25f ;
+	return DIST2(p1, p2) < AOI_RADIS2 * 0.25f;
 }
 
 inline static float
 dist2(struct object *p1, struct object *p2) {
-	float d = DIST2(p1->position,p2->position);
-	return sqrt(d);
+	float d = DIST2(p1->position, p2->position);
+	return d;
 }
 
 void
-aoi_update(struct aoi_space * space , uint32_t id, const char * modestring , float pos[3]) {
-	struct object * obj = map_query(space, space->object,id);
+aoi_update(struct aoi_space * space, uint32_t id, const char * modestring, float pos[3]) {
+	struct object * obj = map_query(space, space->object, id);
 	int i;
 	bool set_watcher = false;
 	bool set_marker = false;
 
-	for (i=0;modestring[i];++i) {
+	for (i = 0; modestring[i]; ++i) {
 		char m = modestring[i];
-		switch(m) {
+		switch (m) {
 		case 'w':
 			set_watcher = true;
 			break;
@@ -376,10 +378,10 @@ aoi_update(struct aoi_space * space , uint32_t id, const char * modestring , flo
 	if (changed || !is_near(pos, obj->last)) {
 		// new object or change object mode
 		// or position changed
-		copy_position(obj->last , pos);
+		copy_position(obj->last, pos);
 		obj->mode |= MODE_MOVE;
 		++obj->version;
-	} 
+	}
 }
 
 static void
@@ -402,20 +404,23 @@ flush_pair(struct aoi_space * space, aoi_Callback cb, void *ud) {
 			) {
 			drop_pair(space, p);
 			*last = next;
-		} else {
-			float distance2 = dist2(p->watcher , p->marker);
+		}
+		else {
+			float distance2 = dist2(p->watcher, p->marker);
 			if (distance2 > AOI_RADIS2 * 4) {
-				drop_pair(space,p);
+				drop_pair(space, p);
 				*last = next;
-			} else if (distance2 < AOI_RADIS2) {
+			}
+			else if (distance2 < AOI_RADIS2) {
 				cb(ud, p->watcher->id, p->marker->id,1);
-				drop_pair(space,p);
+				drop_pair(space, p);
 				*last = next;
-			} else {
+			}
+			else {
 				last = &(p->next);
 			}
 		}
-		p=next;
+		p = next;
 	}
 }
 
@@ -423,9 +428,9 @@ static void
 set_push_back(struct aoi_space * space, struct object_set * set, struct object *obj) {
 	if (set->number >= set->cap) {
 		int cap = set->cap * 2;
-		void * tmp =  set->slot;
+		void * tmp = set->slot;
 		set->slot = space->alloc(space->alloc_ud, NULL, cap * sizeof(struct object *));
-		memcpy(set->slot, tmp ,  set->cap * sizeof(struct object *));
+		memcpy(set->slot, tmp, set->cap * sizeof(struct object *));
 		space->alloc(space->alloc_ud, tmp, set->cap * sizeof(struct object *));
 		set->cap = cap;
 	}
@@ -439,18 +444,20 @@ set_push(void * s, struct object * obj) {
 	int mode = obj->mode;
 	if (mode & MODE_WATCHER) {
 		if (mode & MODE_MOVE) {
-			set_push_back(space, space->watcher_move , obj);
+			set_push_back(space, space->watcher_move, obj);
 			obj->mode &= ~MODE_MOVE;
-		} else {
-			set_push_back(space, space->watcher_static , obj);
 		}
-	} 
+		else {
+			set_push_back(space, space->watcher_static, obj);
+		}
+	}
 	if (mode & MODE_MARKER) {
 		if (mode & MODE_MOVE) {
-			set_push_back(space, space->marker_move , obj);
+			set_push_back(space, space->marker_move, obj);
 			obj->mode &= ~MODE_MOVE;
-		} else {
-			set_push_back(space, space->marker_static , obj);
+		}
+		else {
+			set_push_back(space, space->marker_static, obj);
 		}
 	}
 }
@@ -461,13 +468,11 @@ gen_pair(struct aoi_space * space, struct object * watcher, struct object * mark
 		return;
 	}
 	float distance2 = dist2(watcher, marker);
-
-	//printf("cb: %f,%f\n", distance2, AOI_RADIS2);
 	if (distance2 < AOI_RADIS2) {
 		cb(ud, watcher->id, marker->id,1);
 		return;
 	}
-	if (distance2 > AOI_RADIS2) {
+	if (distance2 > AOI_RADIS2 ) {
 		cb(ud, watcher->id, marker->id, 0);
 		return;
 	}
@@ -484,22 +489,22 @@ gen_pair(struct aoi_space * space, struct object * watcher, struct object * mark
 
 static void
 gen_pair_list(struct aoi_space *space, struct object_set * watcher, struct object_set * marker, aoi_Callback cb, void *ud) {
-	int i,j;
-	for (i=0;i<watcher->number;i++) {
-		for (j=0;j<marker->number;j++) {
-			gen_pair(space, watcher->slot[i], marker->slot[j],cb,ud);
+	int i, j;
+	for (i = 0; i < watcher->number; i++) {
+		for (j = 0; j < marker->number; j++) {
+			gen_pair(space, watcher->slot[i], marker->slot[j], cb, ud);
 		}
 	}
 }
 
-void 
+void
 aoi_message(struct aoi_space *space, aoi_Callback cb, void *ud) {
-	flush_pair(space,  cb, ud);
+	flush_pair(space, cb, ud);
 	space->watcher_static->number = 0;
 	space->watcher_move->number = 0;
 	space->marker_static->number = 0;
 	space->marker_move->number = 0;
-	map_foreach(space->object, set_push , space);	
+	map_foreach(space->object, set_push, space);
 	gen_pair_list(space, space->watcher_static, space->marker_move, cb, ud);
 	gen_pair_list(space, space->watcher_move, space->marker_static, cb, ud);
 	gen_pair_list(space, space->watcher_move, space->marker_move, cb, ud);
@@ -515,7 +520,7 @@ default_alloc(void * ud, void *ptr, size_t sz) {
 	return NULL;
 }
 
-struct aoi_space * 
-aoi_new() {
+struct aoi_space *
+	aoi_new() {
 	return aoi_create(default_alloc, NULL);
 }

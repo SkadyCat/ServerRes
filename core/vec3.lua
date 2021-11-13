@@ -55,5 +55,9 @@ function tb.norm(v1)
     local dis = tb.dis(v1,tb.new(0,0,0))
     return tb.new(v1.x/dis,v1.y/dis,v1.z /dis)
 end
-
+function tb.copy(v1,v2)
+    v1.x = v2.x
+    v1.y = v2.y
+    v1.z = v2.z 
+end
 return tb

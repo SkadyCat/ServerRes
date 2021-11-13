@@ -33,10 +33,8 @@ function module.new(nav,num)
 end
 
 -- 状态更新
-function module.update(code,msg)
-    for k,v in pairs(monsterMap) do
-        v:update(code,msg)
-    end
+function module.update(v,msg)
+    monsterMap[v].model:update(msg)
 end
 
 -- 每一帧都会调用

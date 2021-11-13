@@ -1,162 +1,75 @@
 
 local serviceCore = require "serviceCore"
-local aoi = require "laoi"
-local sc
+local aoi = require "LAoi"
+local space
+local index = 0
+local infos = {"离开","进入"}
+local flags = {}
+local scene
+local function hash(id)
+
+    return "hash:"..id
+end
+
+local function aoiMsg(watcher,marker,flag)
+
+    local msg = {}
+    msg.watcher = watcher
+    msg.marker = marker
+    msg.flag = flag
+    return msg
+end
 local command = {}
-local aroundRole = {}
-local monsterAround = {}
+command.msgQueue = {}
 
-
-local aroundRoleList = {}
-local mtype = {monsterType = 100,userType = 101}
-
-
-
--- code 0 entity
--- code 1 trigger
-local entityEvent =function(code,type,mself,other,st,ot)
-    if ot == mtype.monsterType and st == 0 then
-        aroundRole[mself][other] = type
-        aroundRole[other][mself] = type
-    end
-    if ot == mtype.userType and st == 0 then
-        aroundRole[mself][other] = type
-        aroundRole[other][mself] = type
-    end
-    if st == mtype.monsterType then
-        if code == 0 then
-            aroundRole[mself][other] = type
-            aroundRole[other][mself] = type
+local function callBack(watcher,marker,flag)
+    if flag == 1 then
+       
+        if  flags[hash(watcher)][hash(marker)] == false or  flags[hash(watcher)][hash(marker)] == nil then
+            flags[hash(watcher)][hash(marker)] = true
+            print(index..":"..watcher.."--"..marker.."--"..infos[2])
+            -- scene:broadCast("MonsterHateRet",{monster_id = 3,player_id = 4})
+            table.insert(command.msgQueue,aoiMsg(watcher,marker,flag))
         end
-        if code == 1 then
-            if ot == mtype.userType then
-                monsterAround[mself][other] = type;
-            else
-                aroundRole[mself][other] = type
-                aroundRole[other][mself] = type
-            end
+    else
+        if flags[hash(watcher)][hash(marker)] == true then
+            table.insert(command.msgQueue,aoiMsg(watcher,marker,flag))
+            print(index..":"..watcher.."--"..marker.."--"..infos[1])
+            flags[hash(watcher)][hash(marker)] = false
         end
+        
     end
-    
-    if st == mtype.userType then
-        if code == 1 then
-            aroundRole[mself][other] = type
-            aroundRole[other][mself] = type
-        end
-        if code == 0 then
-            if ot == mtype.monsterType then
-                monsterAround[other][mself] = type;
-            else
-                aroundRole[mself][other] = type
-                aroundRole[other][mself] = type
-            end
-        end
-    end
-    if code == 0 then
-        -- -- 0 是离开，就是 other 离开mself
-        -- if type == 0 then
-        --     -- if mself == mtype.userType then
-        --     -- end
-        --     aroundRole[mself][other] = 0
-        --     aroundRole[other][mself] = 0
-        -- elseif type == 1 then
-        --     -- print("entity other = "..other.." enter "..mself)
-        --     aroundRole[mself][other] = 1
-        --     aroundRole[other][mself] = 1
-        -- end
-        -- aroundRole[mself][other] = type
-        -- aroundRole[other][mself] = type
-    end
-    if code == 1 then
+    index = index+ 1
 
-        -- aroundRole[mself][other] = type
-        -- aroundRole[other][mself] = type
-
-        -- if type == 0 then
-
-        --     if st == mtype.userType then
-        --         aroundRole[mself][other] = 0
-        --         aroundRole[other][mself] = 0
-        --     end
-        --     -- aroundRole[mself][other] = 0
-        --     -- aroundRole[other][mself] = 0
-        -- elseif type == 1 then
-
-        -- end
-    end
-end
-local triggerEvent = function(code,type,mself,other,st,ot)
-    if code == 0 then
-        -- 0 是离开，就是 other 离开mself
-        if type == 0 then
-            print("other = "..other.." leave "..mself)
-            aroundRole[mself][other] = 0
-        elseif type == 1 then
-            print("other = "..other.." enter "..mself)
-            aroundRole[mself][other] = 1
-        end
-    end
-    if code == 1 then
-        if type == 0 then
-            print("other = "..other.." lefve "..mself)
-            aroundRole[mself][other] = 0
-        elseif type == 1 then
-            print("other = "..other.." enter "..mself)
-            aroundRole[mself][other] = 1
-        end
-    end
 end
 
-function command.init()
-    sc = aoi.new()
-    aoi.setecall(sc,entityEvent)
-    aoi.settcall(sc,triggerEvent)
+function command.init(sc)
+    space = aoi.new()
+    aoi.cb(space,callBack)
+    scene = sc
 end
 
-function command.add(id,x,y,range,type)
-    aroundRole[id] = {}
-    aroundRoleList[id] = {}
-    if type == mtype.monsterType then
-        monsterAround[id] = {}
+function command.add(mode,x,y)
+    local index = aoi.add(space,mode,x,y)
+    if mode == "w" or mode == "wm" then
+        flags[hash(index)] = {}
     end
-    aoi.add(sc,id,x+1500,y+1500,range,type)
+    return index
 end
 
 function command.remove(id)
-    for k,v in pairs(aroundRoleList[id]) do
-        aroundRole[v][id] = nil
-    end
-    -- 广播一下角色的状况
-    aroundRole[id] = nil
-    aroundRoleList[id] = nil
-    monsterAround[id] = {}
-    aoi.remove(sc,id)
+    aoi.remove(space,id)
 end
 
-function command.setPos(id,x,y)
-    local re = aoi.update(sc,id,x+1500,y+1500)
-    for k,v in pairs(re) do
-        entityEvent(v.code,v.type,v.self,v.other,v.st,v.ot)
+function command.update(id,x,y)
+    if id== nil then
+        return
     end
+    -- print("update,,,"..id)
+    aoi.update(space,id,x,y)
 end
 
-function command.aroundMonster(id)
-    local tp = {}
-    for k,v in pairs(monsterAround[id]) do
-        if v == 1 then
-            table.insert(tp,k)
-        end
-    end
-    return tp
-end
-function command.getAroundRole(id)
-    aroundRoleList[id] = {}
 
-    for k,v in pairs(aroundRole[id]) do
-        if v == 1 then
-            table.insert(aroundRoleList[id],k)
-        end
-    end
-    return aroundRoleList[id]
-end
+
+
 return command

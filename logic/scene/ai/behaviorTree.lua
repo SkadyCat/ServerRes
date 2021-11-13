@@ -2,9 +2,9 @@
 local BehaviorTree = {}
 
 local EVALUATE_TYPE = {
-	SELECTOR    = "SEQ",
+	SELECTOR    = "SEL",
 	PARALLEL    = "PAR",
-	SEQUENCE    = "SEL",
+	SEQUENCE    = "SEQ",
 	CONDITIONAL = "CON",
 	BEHAVIOR    = "ACT",
 }

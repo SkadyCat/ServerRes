@@ -1,5 +1,5 @@
 
-›
+˛
 Scene.proto"
 QryScenesReq"&
 QryScenesRet
@@ -97,4 +97,19 @@ MoveBroRet
 id (Rid"
 MoveAnimBro""
 MoveAnimBroRet
-uid (RuidB™Message.Scenebproto3
+uid (Ruid"L
+MonsterHateRet
+
+monster_id (R	monsterId
+	player_id (RplayerId">
+MonsterUpdatePosRet
+pos (2.Vec3Rpos
+id (Rid"ê
+AoiRet
+watcher (Rwatcher
+marker (Rmarker
+flag (Rflag 
+watcherType (	RwatcherType
+
+markerType (	R
+markerTypeB™Message.Scenebproto3

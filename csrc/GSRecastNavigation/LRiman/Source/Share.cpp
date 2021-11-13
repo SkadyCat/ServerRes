@@ -50,7 +50,7 @@ static int findPath(lua_State * L) {
 	float x1 = -luaL_checknumber(L,2);
 	float y1 = luaL_checknumber(L,3);
 	float z1 = luaL_checknumber(L,4);
-	float x2 = luaL_checknumber(L,5);
+	float x2 = -luaL_checknumber(L,5);
 	float y2 = luaL_checknumber(L,6);
 	float z2 = luaL_checknumber(L,7);
 	Vector3 v3(x1,y1,z1);
