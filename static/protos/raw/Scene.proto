@@ -107,12 +107,14 @@ message SetPosReq{
 
     Vec3 pos = 1;
     int64 timeStamp = 2;
+    int32 type = 3;
 }
 
 message SetPosRet{
     Vec3 pos = 1;
     int32 id = 2;
     int64 timeStamp = 3;
+    int32 type = 4;
 }
 message SetRotReq{
 
@@ -198,6 +200,8 @@ message MonsterHpRet{
     int32 id = 1;
     int32 hp = 2;
     int32 maxHp = 3;
+    int32 hurtType = 4;
+    int32 hurtVal = 5;
 }
 message MonsterDeadRet{
     int32 id = 1;
@@ -210,3 +214,9 @@ message MonsterReliveRet{
     Vec3 pos = 2;
 
 }
+
+message MonsterSpecialStautRet{
+    int32 id = 1;
+    int32 type = 2;
+}
+

@@ -4,6 +4,17 @@ SEQ:AI
         ACT:刷新死亡计时:flushDeadTime
         CON:死亡计时结束:deadTimeEnd
         ACT:复活:relive
+    SEL:减速过程
+        CON:死亡状态中:isNotDeading
+        CON:减速时间没有结束:notEndSlowDownTime
+        ACT:降低减速时间:cutSlowDownTime
+        ACT:设定速度:setSpeed
+        CON:存在目标点:haveDst
+        ACT:更新路径:findPath
+        CON:减速时间小于0:slowDownTimeLowerZero
+        ACT:恢复移动速度:recoverSpeed
+        ACT:更新路径:findPath
+    ACT:日志:Log
     SEL:巡逻
         CON:死亡状态中:isNotDeading
         SEQ:原地待机
@@ -40,28 +51,39 @@ SEQ:AI
             SEL:追踪
                 CON:在攻击中:isNotAtking
                 CON:拥有仇恨:haveHate
+                CON:存在目标点:haveDst
                 CON:没有超过寻路偏差:lowOffset
                 CON:没有接近目标点:noArriveDst
                 ACT:移动到目标点:goPlayer
             SEL:更新路径
                 CON:在攻击中:isNotAtking
                 CON:拥有仇恨:haveHate
+                CON:存在目标点:haveDst
                 CON:超过寻路偏差:moreOffset
                 ACT:更新DST:updateAtkPos
-                ACT:更新路径:findAtkPath
+                ACT:更新路径:findPath
                 ACT:移动到目标点:pathMove
             SEL:攻击玩家
                 CON:在攻击中:isNotAtking
                 CON:拥有仇恨:haveHate
+                CON:存在目标点:haveDst
                 CON:到达目标点:arriveDst
                 CON:CD<=0:detectCD
                 ACT:攻击玩家:atkPlayer
             SEL:刷新CD
                 CON:CD>0:inCD
                 ACT:刷新CD:flushCD
+            SEL:结束攻击
+                CON:在攻击中:isNotAtking
+                CON:拥有仇恨:haveHate
+                CON:超出攻击范围:moreAtkRange
+                ACT:仇恨结束:hateEnd
     SEL:刷新ATKGAP
         CON:在攻击状态中:isAtking
         ACT:刷新攻击间隔:flushAtkGap
+
+    
+    
 
     
 

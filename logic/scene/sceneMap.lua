@@ -7,6 +7,7 @@ local user_sceneMap = {}
 function module.init()
     local sc = scene.new("TestLab")
     sceneMap["TestLab"] = sc
+    sc:init()
 end
 
 function module.leave(uid)

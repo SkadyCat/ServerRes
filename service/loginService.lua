@@ -99,6 +99,14 @@ function command.RegisterReq(msg)
     if not data.err then
         rBack.code = code.SUCCESS
         rBack.info = "注册成功"
+        -- 初始化数据库信息
+        -- 初始化场景数据
+        local mInfo = mysql.query("sceneEvent","init",msg.user_acc,0,0,0)
+        -- 初始化背包数据
+        for i = 0,29 do
+            mysql.query("bagEvent","initBag",msg.user_acc,i,0,0,0)
+        end
+        
     else
         rBack.code = code.FAILED
         rBack.info = "注册失败"

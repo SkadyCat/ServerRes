@@ -1,5 +1,5 @@
 
-®
+Ê
 Scene.proto"
 QryScenesReq"&
 QryScenesRet
@@ -63,14 +63,16 @@ TestBroRet
 MoveBroRet
 id (Rid
 pos (2.Vec3Rpos
-	timeStamp (R	timeStamp"B
+	timeStamp (R	timeStamp"V
 	SetPosReq
 pos (2.Vec3Rpos
-	timeStamp (R	timeStamp"R
+	timeStamp (R	timeStamp
+type (Rtype"f
 	SetPosRet
 pos (2.Vec3Rpos
 id (Rid
-	timeStamp (R	timeStamp"B
+	timeStamp (R	timeStamp
+type (Rtype"B
 	SetRotReq
 rot (2.Vec3Rrot
 	timeStamp (R	timeStamp"R
@@ -118,14 +120,19 @@ markerType"3
 type (Rtype";
 PlayerAtkMonsterReq
 id (Rid
-skill (Rskill"D
+skill (Rskill"z
 MonsterHpRet
 id (Rid
 hp (Rhp
-maxHp (RmaxHp"9
+maxHp (RmaxHp
+hurtType (RhurtType
+hurtVal (RhurtVal"9
 MonsterDeadRet
 id (Rid
 pos (2.Vec3Rpos";
 MonsterReliveRet
 id (Rid
-pos (2.Vec3RposBªMessage.Scenebproto3
+pos (2.Vec3Rpos"<
+MonsterSpecialStautRet
+id (Rid
+type (RtypeBªMessage.Scenebproto3

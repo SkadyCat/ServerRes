@@ -6,7 +6,7 @@ local navApi = require "scene/nav"
 local json = require "json"
 local robot = require "scene/ai/robot"
 local timer = require "timerCore"
-
+local vec3 = require "vec3"
 
 local module = {}
     function module.new(sceneName)
@@ -17,33 +17,33 @@ local module = {}
         scene.nav = navApi.new(sceneName)
         scene.aoiMap = {}
         scene.aoi = require "scene/aoi"
+        scene.queryApi = require "scene/sceneQuery"
         scene.aoi.init(scene)
+        scene.queryApi.init(scene)
         function scene:enter(uid,userInfo)
             self.playerMap[uid] = item.new(uid,self,userInfo)
             self.broadCastMap[uid] = true
-            
-
-            -- 客户端的初始化
             local uInfo = self.playerMap[uid]
-            scene:broadCast("BornPlayerRet",{id =uid,nickName = uInfo.userInfo.nickName,userAcc = uInfo.userInfo.userAcc})
             
-            -- 获取场景的怪物信息
-            for k,v in pairs(self.monsterMap) do
-                scene:send(uid,"MonsterGenRet",{id = k,pos = v.model.param.pos})
-                v.aoiIndex =  self.aoi.add("w",v.model.param.pos.x,v.model.param.pos.z)
-                self.aoiMap[v.aoiIndex] = {id = k,type = "monster"}
-            end
-            --获取场景的玩家信息
+            -- 从数据库中获取玩家在场景中的位置信息
+            local info = self.queryApi.onEnterScene(uid)
+            uInfo.pos.x = tonumber(info.x)
+            uInfo.pos.y = tonumber(info.y)
+            uInfo.pos.z = tonumber(info.z)
+
+            -- BornPlayerRet
+            scene:broadCast("BornPlayerRet",{id =uid,nickName = uInfo.userInfo.nickName,userAcc = uInfo.userInfo.userAcc,playerPos = uInfo.pos})
             for k,v in pairs(self.playerMap) do
                 uInfo = v
                 print(json.encode(uInfo.userInfo))
-                scene:send(uid,"BornPlayerRet",{id =v.uid,nickName = uInfo.userInfo.nickName,userAcc = uInfo.userInfo.userAcc})
+                scene:send(uid,"BornPlayerRet",{id =v.uid,nickName = uInfo.userInfo.nickName,userAcc = uInfo.userInfo.userAcc,playerPos = uInfo.pos})
             end
-            -- 广播当前场景中的玩家消息
-            -- scene:broadCast("QryScenePlayerRet",{ids = scene:queryPlayers()})
+            
 
             --各个服务的场景初始化
-
+            for k,v in pairs(self.monsterMap) do
+                scene:send(uid,"MonsterGenRet",{id = k,pos = v.model.param.pos})
+            end
             --状态服务的初始化
             local serviceName = "statuService"
             local serviceAddress =  harbor.queryname(serviceName)
@@ -52,11 +52,23 @@ local module = {}
             local aoiIndex = self.aoi.add("wm",uInfo.pos.x,uInfo.pos.z)
             self.playerMap[uid].aoiIndex = aoiIndex
             self.aoiMap[aoiIndex] = {id = uid,type = "player"}
-            print("init aoiIndex = "..aoiIndex..","..uid)
+            
+           
+        end
+        function scene:init()
+            -- 获取场景的怪物信息
+            for k,v in pairs(self.monsterMap) do
+                v.aoiIndex =  self.aoi.add("w",v.model.param.pos.x,v.model.param.pos.z)
+                self.aoiMap[v.aoiIndex] = {id = k,type = "monster"}
+            end
         end
 
+        function scene:getUser(uid)
+            return self.playerMap[uid]
+        end
         function scene:leave(uid)
             local uInfo = self.playerMap[uid]
+            self.queryApi.onLeaveScene(uid)
             self.playerMap[uid] = nil
             self.broadCastMap[uid] = nil
             local num = 0
@@ -127,16 +139,16 @@ local module = {}
             local tp = {code = "playerEvent",value = msg}
             robot.update(msg.id,tp)
         end
-        
+        function scene:updateAoi(id)
+            local v = scene.monsterMap[id]
+            self.aoi.update(v.aoiIndex,v.model.param.pos.x,v.model.param.pos.z)
+        end
         function scene.update()
             robot.run()
             for k,v in pairs(scene.monsterMap) do
-
                 scene.aoi.update(v.aoiIndex,v.model.param.pos.x,v.model.param.pos.z)
             end
-            -- print(#scene.aoi.msgQueue)
             for k,v in pairs(scene.aoi.msgQueue) do
-
                 local w = v.watcher
                 local m = v.marker
                 v.watcher = scene.aoiMap[w].id
@@ -151,24 +163,9 @@ local module = {}
                 end
             end
             scene.aoi.msgQueue = {}
-            -- for k,v in pairs(scene.playerMap) do
-            --     if v  then
-            --         v:run()
-            --         local ps = v:getSendPos()
-            --         if ps then
-            --             local msg = {id = v.uid,pos = ps}
-                       
-            --         end
-            --     end
-            -- end
-
         end
-
-        scene.monsterMap = robot.new(scene,10)
-        
-        timer.start(scene.update,5)
-
-
+        scene.monsterMap = robot.new(scene,1)
+        timer.start(scene.update,10)
         return scene
     end
     

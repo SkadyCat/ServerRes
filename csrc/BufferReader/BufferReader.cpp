@@ -314,16 +314,16 @@ static string GetMsg(buffer* bf) {
 
 
 
-	if(bf->dq.size() > 2000){
+	// if(bf->dq.size() > 2000){
 
-		cout<<"err: "<<bf->dq.size()<<endl;
+	// 	cout<<"err: "<<bf->dq.size()<<endl;
 
-		for (int i = 0; i < 300; i++) {
-			cout << bf->dq.back() << ",";
-			bf->dq.pop_back();
-		}
-		cout << endl;
-	}
+	// 	for (int i = 0; i < 300; i++) {
+	// 		cout << bf->dq.back() << ",";
+	// 		bf->dq.pop_back();
+	// 	}
+	// 	cout << endl;
+	// }
 	
 	stack<char> stk;
 	int len = bf->dq.back() + 1;

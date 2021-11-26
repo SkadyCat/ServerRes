@@ -54,6 +54,7 @@ end
 
 function command.add(mode,x,y)
     local index = aoi.add(space,mode,x,y)
+    print("加入的index = "..index)
     if mode == "w" or mode == "wm" then
         flags[hash(index)] = {}
     end

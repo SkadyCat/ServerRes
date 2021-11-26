@@ -42,10 +42,11 @@ function module.bagEvent()
 end
 
 function module.sceneEvent()
-
     local sv = {}
-    -- sv.init = module.db:prepare("insert into scene(user_acc,x,y,z) values(?,?,?,?)")
-    -- sv.pull = module.db:
+    sv.init = module.db:prepare("insert into scene(user_acc,x,y,z) values(?,?,?,?)")
+    sv.update = module.db:prepare("update scene set x = ?,y = ?,z = ? where user_acc = ?")
+    sv.select = module.db:prepare("select * from scene where user_acc = ?")
+
     return sv
 end
 
