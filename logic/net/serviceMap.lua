@@ -38,6 +38,7 @@ map["SkillReleaseBro"] = {name = "skillService",ret = 2}
 map["SkillDestroyBro"] = {name = "skillService",ret = 2}
 map["SkillAniBro"] = {name = "skillService",ret = 2}
 
+map["SkillAniReleaseBro"] = {name = "skillService",ret = 2}
 
 --bagService
 

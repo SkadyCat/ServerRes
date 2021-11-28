@@ -64,6 +64,13 @@ message SkillAniBroRet{
     Vec3 dstPos = 2;
 }
 
+message SkillAniReleaseBro{
+    int32 uid = 1;
+}
+
+message SkillAniReleaseBroRet{
+    int32 uid = 1;
+}
 message SkillAnimReq{
     int32 type = 1;
     Vec3 dstPos = 2;

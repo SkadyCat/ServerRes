@@ -1,5 +1,5 @@
 
-í
+À
 Skill.protoScene.proto":
 SkillDynamicConfig
 id (Rid
@@ -42,7 +42,11 @@
 dstPos (2.Vec3RdstPos"A
 SkillAniBroRet
 uid (Ruid
-dstPos (2.Vec3RdstPos"m
+dstPos (2.Vec3RdstPos"&
+SkillAniReleaseBro
+uid (Ruid")
+SkillAniReleaseBroRet
+uid (Ruid"m
 SkillAnimReq
 type (Rtype
 dstPos (2.Vec3RdstPos

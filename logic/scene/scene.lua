@@ -7,6 +7,7 @@ local json = require "json"
 local robot = require "scene/ai/robot"
 local timer = require "timerCore"
 local vec3 = require "vec3"
+local mysql = require "mysql/mysqlHelp"
 
 local module = {}
     function module.new(sceneName)
@@ -26,10 +27,12 @@ local module = {}
             local uInfo = self.playerMap[uid]
             
             -- 从数据库中获取玩家在场景中的位置信息
-            local info = self.queryApi.onEnterScene(uid)
-            uInfo.pos.x = 0
-            uInfo.pos.y = 0
-            uInfo.pos.z = 0
+            local info = mysql.query("sceneEvent","select",uInfo.userInfo.userAcc)[1]
+
+            -- print(json.encode(info))
+            uInfo.pos.x = info.x
+            uInfo.pos.y = info.y
+            uInfo.pos.z = info.z
 
             -- BornPlayerRet
             scene:broadCast("BornPlayerRet",{id =uid,nickName = uInfo.userInfo.nickName,userAcc = uInfo.userInfo.userAcc,playerPos = uInfo.pos})
