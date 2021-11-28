@@ -1,7 +1,9 @@
 
-ò
-
-Skill.protoScene.proto"P
+í
+Skill.protoScene.proto":
+SkillDynamicConfig
+id (Rid
+index (Rindex"P
 SkillTestReq
 id (Rid
 pos (2.Vec3Rpos
@@ -59,4 +61,6 @@
 SkillDestroyBroRet
 id (Rid
 uid (Ruid
-index (RindexBªMessage.Skillbproto3
+index (Rindex"=
+SkillInfoRet-
+configs (2.SkillDynamicConfigRconfigsBªMessage.Skillbproto3

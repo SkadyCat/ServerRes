@@ -3,7 +3,7 @@ require "skynet.manager"
 local skillMap = require "skill/skillMap"
 local json = require "json"
 local scene = require "scene/sceneHelp"
-
+local mysql = require "mysql/mysqlHelp"
 local command = {}
 
 function command.SkillTestReq(msg)
@@ -36,6 +36,8 @@ function command.init(uid,scene)
     
     skillMap.new(uid,scene)
 end
+
+
 
 
 

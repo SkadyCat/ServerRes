@@ -27,9 +27,9 @@ local module = {}
             
             -- 从数据库中获取玩家在场景中的位置信息
             local info = self.queryApi.onEnterScene(uid)
-            uInfo.pos.x = tonumber(info.x)
-            uInfo.pos.y = tonumber(info.y)
-            uInfo.pos.z = tonumber(info.z)
+            uInfo.pos.x = 0
+            uInfo.pos.y = 0
+            uInfo.pos.z = 0
 
             -- BornPlayerRet
             scene:broadCast("BornPlayerRet",{id =uid,nickName = uInfo.userInfo.nickName,userAcc = uInfo.userInfo.userAcc,playerPos = uInfo.pos})
@@ -39,7 +39,7 @@ local module = {}
                 scene:send(uid,"BornPlayerRet",{id =v.uid,nickName = uInfo.userInfo.nickName,userAcc = uInfo.userInfo.userAcc,playerPos = uInfo.pos})
             end
             
-
+            
             --各个服务的场景初始化
             for k,v in pairs(self.monsterMap) do
                 scene:send(uid,"MonsterGenRet",{id = k,pos = v.model.param.pos})
@@ -114,14 +114,12 @@ local module = {}
         end
 
         function scene:setPos(uid,msg)
-
             self.playerMap[uid]:setPos(msg.pos)
             msg.id = uid
             msg.uid = nil
             scene:broadCast("SetPosRet",msg)
             local sv = self.playerMap[uid]
             self.aoi.update(sv.aoiIndex,msg.pos.x,msg.pos.z)
-            
         end
         function scene:setRot(uid,msg)
             self.playerMap[uid]:setRot(msg.rot)

@@ -3,6 +3,8 @@ require "skynet.manager"
 
 local harbor = require "skynet.harbor"
 local userMap = require "login/userMap"
+
+local sender = require "net/userHelp"
 local mysql = require "mysql/mysqlHelp"
 local json = require "json"
 local code = require "common/code"
@@ -13,7 +15,6 @@ function command.LoginReq(msg)
     local tp = {}
 
     if userMap.get(msg.user_acc) ~= nil then
-        print("have login")
         tp.code = code.FAILED
         tp.info = "have login"
         return "LoginRet",tp
@@ -55,7 +56,17 @@ function command.LoginReq(msg)
     local serviceAddress =  harbor.queryname(serviceName)
     skynet.send(serviceAddress,"lua","bagInit",msg.user_acc)
 
-            
+    -- 反馈技能信息
+    local infos = mysql.query("skillEvent","select",msg.user_acc)
+    print(json.encode(infos))
+    local tb = {}
+    tb.configs = {}
+    for k,v in pairs(infos) do
+        local info = {id = v.skill_index,index = v.sub_index}
+        table.insert(tb.configs,info)
+    end
+    sender.send(msg.uid,"SkillInfoRet",tb)
+
     tp.code = 1
     tp.info = "Login Success"
     return "LoginRet",tp
@@ -106,6 +117,14 @@ function command.RegisterReq(msg)
         for i = 0,29 do
             mysql.query("bagEvent","initBag",msg.user_acc,i,0,0,0)
         end
+
+        -- 初始化技能数据
+        mysql.query("skillEvent","init",1,1111,msg.user_acc)
+        mysql.query("skillEvent","init",2,2222,msg.user_acc)
+        mysql.query("skillEvent","init",3,3333,msg.user_acc)
+        mysql.query("skillEvent","init",4,4444,msg.user_acc)
+        mysql.query("skillEvent","init",5,0,msg.user_acc)
+        mysql.query("skillEvent","init",6,0,msg.user_acc)
         
     else
         rBack.code = code.FAILED

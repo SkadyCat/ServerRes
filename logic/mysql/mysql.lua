@@ -55,12 +55,22 @@ function module.logEvent()
     tb.log = module.db:prepare("insert into log(info,time) values(?,?)")
     return tb
 end
+
+function module.skillEvent()
+    local tb = {}
+    tb.init = module.db:prepare("insert into skill_config(sub_index,skill_index,user_acc) values(?,?,?)")
+    tb.select = module.db:prepare("select * from skill_config where user_acc = ?")
+    return tb
+end
+
+
 function module.init()
     local evt = {}
     evt.bagEvent = module.bagEvent()
     evt.sceneEvent = module.sceneEvent()
     evt.loginEvent = module.loginEvent()
     evt.logEvent = module.logEvent()
+    evt.skillEvent = module.skillEvent()
     module.evt = evt
 end
 

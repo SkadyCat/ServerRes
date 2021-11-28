@@ -194,7 +194,6 @@ function module.new(scene,posSet,id)
 
     function rb:cutSlowDownTime()
         self.param.slowdownTime = self.param.slowdownTime - deltaTime
-        print("cut slow down time")
         return next
     end
 
@@ -217,11 +216,10 @@ function module.new(scene,posSet,id)
     end
 
     function rb:recoverSpeed()
-
-        print("recover speed")
         self.param.slowdownTime = 0
         self.param.slowdown = 0
         self.param.speed = self.param.maxSpeed
+        self.scene:broadCast("MonsterSpecialStautRecoverRet",{id = self.param.id,type = 2})
         return next
     end
 
@@ -245,10 +243,6 @@ function module.new(scene,posSet,id)
 
     function rb:moreOffset()
         local param = self.param
-        -- print("more: "..vec3.dis(param.dst,param.playerPos)..json.encode(param.playerPos)..json.encode(param.dst))
-        
-        -- print(param.dst)
-        -- print(param.playerPos)
         if vec3.dis(param.dst,param.playerPos) > 1 then
             return next
         end
@@ -445,8 +439,6 @@ function module.new(scene,posSet,id)
         end
         return next
     end
-
-
     return rb
 end
 

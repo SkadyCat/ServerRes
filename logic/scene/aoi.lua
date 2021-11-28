@@ -69,6 +69,9 @@ function command.update(id,x,y)
     if id== nil then
         return
     end
+    if x == nil then 
+        return
+    end
     -- print("update,,,"..id)
     aoi.update(space,id,x,y)
 end

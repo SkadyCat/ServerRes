@@ -12,6 +12,7 @@ local function init()
     register("Skill")
     register("Statu")
     register("Bag")
+    register("Monster")
 end
 init()
 
