@@ -8,8 +8,8 @@ function module.connect()
 		host="127.0.0.1",
 		port=3306,
 		database="magic",
-		user="magicer",
-		password="12345678a",
+		user="magic",
+		password="123",
                 charset="utf8mb4",
 		max_packet_size = 1024 * 1024,
 		on_connect = on_connect

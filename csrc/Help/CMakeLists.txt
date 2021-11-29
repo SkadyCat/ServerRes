@@ -1,5 +1,5 @@
 
-
+add_compile_options(-fPIC)
 aux_source_directory(. DIR_SRCS)
 include_directories(.)
 set(Help_LIBRARY "Help")

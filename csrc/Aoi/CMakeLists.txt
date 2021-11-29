@@ -1,5 +1,5 @@
 set(Aoi_LIBRARY "Aoi")
-
+add_compile_options(-fPIC)
 
 
 set(Aoi_SOURCE_FILES
