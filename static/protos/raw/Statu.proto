@@ -2,6 +2,34 @@
 syntax = "proto3";
 option csharp_namespace = "Message.Statu";
 
+
+message StatuModel{
+    string user_acc = 1;
+    int32 hp = 2;
+    int32 mp = 3;
+    int32 max_hp = 4;
+    int32 max_mp = 5;
+    int32 atk = 6;
+    int32 defense = 7;
+    int32 dodge = 8;
+    int32 atk_speed = 9;
+    int32 crit = 10;
+    int32 crit_chance = 11;
+    int32 efire = 12;
+    int32 eground = 13;
+    int32 ewind = 14;
+    int32 ewater = 15;
+    int32 speed = 16;
+    int32 equip_const_atk = 17;
+    int32 equip_coe_atk = 18;
+    int32 equip_coe_def = 19;
+    int32 equip_const_def = 20;
+    int32 skill_const_def = 21;
+    int32 skill_const_atk = 22;
+    int32 coins = 23;
+    int32 main_index = 24;
+}
+
 message SetHpReq{
     int32 hp = 1;
 }
@@ -27,4 +55,8 @@ message StatuInitRet{
     int32 atk = 4;
     int32 maxHp = 5;
     int32 maxMp = 6;
+}
+
+message StatuOnLoginRet{
+    StatuModel model = 1;
 }

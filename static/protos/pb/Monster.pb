@@ -1,18 +1,23 @@
 
-£
+˛
 Monster.protoScene.proto"3
 MonsterAtkRet
 id (Rid
-type (Rtype";
+type (Rtype"]
 PlayerAtkMonsterReq
 id (Rid
-skill (Rskill"z
+skill (Rskill 
+model (2
+.HurtModelRmodel"ê
 MonsterHpRet
 id (Rid
 hp (Rhp
 maxHp (RmaxHp
 hurtType (RhurtType
-hurtVal (RhurtVal"9
+hurtVal (RhurtVal
+skill (Rskill" 
+MonsterStopRet
+id (Rid"9
 MonsterDeadRet
 id (Rid
 pos (2.Vec3Rpos";

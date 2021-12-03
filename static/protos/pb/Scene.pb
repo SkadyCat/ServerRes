@@ -1,12 +1,15 @@
 
-¤
+ë
 Scene.proto"
 QryScenesReq"&
 QryScenesRet
 scenes (	Rscenes"
 QryScenePlayerReq"%
 QryScenePlayerRet
-ids (Rids"c
+ids (Rids"E
+	HurtModel
+	hurtValue (R	hurtValue
+hurtType (RhurtType"c
 EnterSceneReq
 	sceneName (	R	sceneName
 nickName (	RnickName

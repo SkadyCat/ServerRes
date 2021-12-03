@@ -10,6 +10,11 @@ function command.query(et,field,...)
     return rt
 end
 
+function command.start()
+
+
+end
+
 skynet.start(function()
     mysql.connect()
     mysql.init()

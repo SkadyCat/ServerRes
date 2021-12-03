@@ -14,6 +14,7 @@ message LoginRet{
 	string info = 2;
 	string user_acc = 3;
 	string nick_name = 4;
+	string scene = 5;
 }
 message RegisterReq{
 	string user_acc = 1;

@@ -30,6 +30,7 @@ function module.loginEvent()
     loginEvent.register =  module.db:prepare("insert into user_info(user_acc,user_pwd,nick_name) values(?,?,?)")
     loginEvent.login =   module.db:prepare("select * from user_info where user_acc = ?")
     loginEvent.getUserInfo = module.db:prepare("select * from user_info where user_acc = ?")
+    loginEvent.updateScene = module.db:prepare("update user_info set scene = ? where user_acc = ?")
     return loginEvent
 end
 
@@ -46,9 +47,9 @@ function module.sceneEvent()
     sv.init = module.db:prepare("insert into scene(user_acc,x,y,z) values(?,?,?,?)")
     sv.update = module.db:prepare("update scene set x = ?,y = ?,z = ? where user_acc = ?")
     sv.select = module.db:prepare("select * from scene where user_acc = ?")
-    
     return sv
 end
+
 
 function module.logEvent()
     local tb = {}
@@ -63,7 +64,20 @@ function module.skillEvent()
     return tb
 end
 
-
+function module.statuEvent()
+    local tb = {}
+    tb.insert =  module.db:prepare("insert into statu(user_acc,hp,mp,max_hp,max_mp,atk,defense,dodge,atk_speed,crit,crit_chance,efire,eground,ewind,ewater,speed,equip_const_atk,equip_coe_atk,equip_coe_def,equip_const_def,skill_const_def,skill_const_atk,coins) values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)")
+    tb.select = module.db:prepare("select * from statu where user_acc = ?")
+    return tb
+end
+function module.eqsEvent()
+    local tb = {}
+        tb.insert = module.db:prepare("insert into eqs(type,x,y,z,scene) values(?,?,?,?,?)")
+        tb.selectAll = module.db:prepare("select * from eqs where scene = ?")
+        tb.delete = module.db:prepare("delete from eqs where main_index = ?")
+        tb.newID = module.db:prepare("select * from eqs order by main_index DESC limit 1;")
+    return tb
+end
 function module.init()
     local evt = {}
     evt.bagEvent = module.bagEvent()
@@ -71,6 +85,8 @@ function module.init()
     evt.loginEvent = module.loginEvent()
     evt.logEvent = module.logEvent()
     evt.skillEvent = module.skillEvent()
+    evt.eqsEvent = module.eqsEvent()
+    evt.statuEvent= module.statuEvent()
     module.evt = evt
 end
 

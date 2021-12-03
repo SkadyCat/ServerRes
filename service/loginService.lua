@@ -10,6 +10,24 @@ local json = require "json"
 local code = require "common/code"
 local command = {}
 
+
+local function skillInfoRet(msg)
+    local infos = mysql.query("skillEvent","select",msg.user_acc)
+    local tb = {}
+    tb.configs = {}
+    for k,v in pairs(infos) do
+        local info = {id = v.skill_index,index = v.sub_index}
+        table.insert(tb.configs,info)
+    end
+    sender.send(msg.uid,"SkillInfoRet",tb)
+end
+
+local function statuInfoRet(msg)
+    local infos = mysql.query("statuEvent","select",msg.user_acc)[1]
+    local ret = {model = infos}
+    sender.send(msg.uid,"StatuOnLoginRet",ret)
+end
+
 function command.LoginReq(msg)
     
     local tp = {}
@@ -17,16 +35,19 @@ function command.LoginReq(msg)
     if userMap.get(msg.user_acc) ~= nil then
         tp.code = code.FAILED
         tp.info = "have login"
+        
         return "LoginRet",tp
     end
     --初始化信息
     local info = mysql.query("loginEvent","login",msg.user_acc)
     if #info ~= 0 then
         data = info[1]
+        print(json.encode(data))
         if data.user_pwd ~= msg.user_pwd then
-            
             tp.code = code.FAILED
             tp.info = "pwd err"
+            
+
             return "LoginRet",tp
         end
         tp.nick_name = data.nick_name
@@ -55,18 +76,14 @@ function command.LoginReq(msg)
     local serviceName = "bagService"
     local serviceAddress =  harbor.queryname(serviceName)
     skynet.send(serviceAddress,"lua","bagInit",msg.user_acc)
-
+    
     -- 反馈技能信息
-    local infos = mysql.query("skillEvent","select",msg.user_acc)
-    print(json.encode(infos))
-    local tb = {}
-    tb.configs = {}
-    for k,v in pairs(infos) do
-        local info = {id = v.skill_index,index = v.sub_index}
-        table.insert(tb.configs,info)
-    end
-    sender.send(msg.uid,"SkillInfoRet",tb)
+    skillInfoRet(msg)
+    statuInfoRet(msg)
 
+
+
+    tp.scene =  data.scene
     tp.code = 1
     tp.info = "Login Success"
     return "LoginRet",tp
@@ -104,6 +121,11 @@ function command.LoginOutReq(msg)
     userMap.remove(msg.user_acc)
 end
 
+
+function command.EnterSceneReq(msg)
+    mysql.query("loginEvent","updateScene",msg.sceneName,msg.userAcc)
+end
+
 function command.RegisterReq(msg)
     local data = mysql.query("loginEvent","register",msg.user_acc,msg.user_pwd,msg.nick_name)
     local rBack = {}
@@ -126,6 +148,34 @@ function command.RegisterReq(msg)
         mysql.query("skillEvent","init",5,0,msg.user_acc)
         mysql.query("skillEvent","init",6,0,msg.user_acc)
         
+        -- 初始化状态数据
+        mysql.query("statuEvent","insert",
+        msg.user_acc,--账号 -0
+        100,--hp-1
+        100,--mp-2
+        100,--max_hp-3
+        100,--max_mp-4
+        20,--atk-5
+        10,--defense-6
+        0,--dodge-7
+        0.3,--atk_speed-8
+        0.2,--crit-9
+        0,--crit_change-10
+        1,--efire-11
+        1,--eground-12
+        1,--ewind-13
+        1,--ewater-14
+        10,--speed-15
+        0,--equip_const_atk-16
+        0,--equip_coe_atk-17
+        0,--equip_coe_def-18
+        0,--equip_const_def-19
+        0,--skill_const_def-20
+        0,--skill_const_atk-21
+        100)--conis-22
+        
+
+
     else
         rBack.code = code.FAILED
         rBack.info = "注册失败"

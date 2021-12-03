@@ -1,7 +1,6 @@
 set(LAoi_LIBRARY "LAoi")
 
 
-
 set(LAoi_SOURCE_FILES
     ${CMAKE_CURRENT_SOURCE_DIR}/luashare.cpp
 )
@@ -14,8 +13,10 @@ include_directories(
 	../Help
 	../Aoi
 )
+add_subdirectory(backward-cpp)
+add_library(${LAoi_LIBRARY} SHARED ${LAoi_SOURCE_FILES} ${BACKWARD_ENABLE})
+add_backward(${LAoi_LIBRARY})
 
-add_library(${LAoi_LIBRARY} SHARED ${LAoi_SOURCE_FILES} )
 #add_executable(${LAoi_LIBRARY}  ${LAoi_HEADER_FILES} ${LAoi_SOURCE_FILES} )
 
 set_target_properties(${LAoi_LIBRARY} PROPERTIES PREFIX "")

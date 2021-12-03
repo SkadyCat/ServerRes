@@ -7,6 +7,43 @@ local harbor = require "skynet.harbor"
 local serviceMap = require "net/serviceMap"
 local bf = require "buffer"
 local json = require "json"
+
+local function process(id,user,head,msg,serMap)
+    for k,v in pairs(serMap) do
+        local tb = v
+        if tb == nil then
+            print("no proto ..."..head)
+            return false
+        end
+        local serviceName = tb.name
+        local serviceAddress =  harbor.queryname(serviceName)
+        if not msg then
+            error("the err proto :"..head)
+            return false
+        end
+        if msg == "#" then
+            msg = {}
+            msg.uid = id
+        else
+            msg.uid = id
+        end
+    
+        if tb.ret == 0 then
+            skynet.send(serviceAddress,"lua",head,msg)
+        elseif tb.ret == 1 then 
+            local retHead,retMsg = skynet.call(serviceAddress,"lua",head,msg)
+            if retMsg then
+                if retMsg.uid ~= nil then
+                    retMsg.uid = nil
+                end
+                user:send(retHead,retMsg)
+            end
+        elseif tb.ret == 2 then
+            local retHead,retMsg = skynet.send(serviceAddress,"lua",head,msg)
+        end
+    end
+    return true
+end
 local module = {}
     function module.new(uid)
         local user = {}
@@ -20,62 +57,29 @@ local module = {}
             user:send("ConnectRet",{id = id})
             while user.closeFlag do
                 local str = socket.read(id)
-                if true then
-                    if str then
-                        user.buffer.read(str)
-                        while true do
-                            local head,msg = user.buffer.decode()
-                            if not head then
-                                break
-                            end
-                            local tb = serviceMap[head]
-                            if tb == nil then
-                                print("no proto ..."..head)
-                                break
-                            end
-                            local serviceName = tb.name
-                            local serviceAddress =  harbor.queryname(serviceName)
-                            if not msg then
-                                error("the err proto :"..head)
-                                break
-                            end
-                            if msg == "#" then
-                                msg = {}
-                                msg.uid = id
-                            else
-                                msg.uid = id
-                            end
-
-                            if tb.ret == 0 then
-                                skynet.send(serviceAddress,"lua",head,msg)
-                            elseif tb.ret == 1 then 
-                                local retHead,retMsg = skynet.call(serviceAddress,"lua",head,msg)
-                                if retMsg then
-                                    if retMsg.uid ~= nil then
-                                        retMsg.uid = nil
-                                    end
-                                    -- local retBuf = user.buffer.encode(retHead,retMsg)
-                                    -- socket.write(user.uid,retBuf)
-                                    user:send(retHead,retMsg)
-                                    -- user.buf = user.buf..retBuf
-                                end
-
-                            elseif tb.ret == 2 then
-                                --Bro类型的数据
-                                local retHead,retMsg = skynet.send(serviceAddress,"lua",head,msg)
-
-                            end
+                if str then
+                    user.buffer.read(str)
+                    while true do
+                        local head,msg = user.buffer.decode()
+                        if not head then
+                            break
                         end
-                    else
-                        socket.close(id)
-                        user.closeFlag = false
+                        local tb = serviceMap[head]
+                        local flag = process(id,user,head,msg,tb)
+                        if(flag == false) then
+                            break
+                        end
                     end
+                else
+                    socket.close(id)
+                    user.closeFlag = false
                 end
             end
             print("end echo ->"..id)
         end
 
         function user:close()
+            print("close,,,,")
             self.closeFlag = true
             socket.close(self.uid)
         end

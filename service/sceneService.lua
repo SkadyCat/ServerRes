@@ -11,6 +11,7 @@ function command.EnterSceneReq(msg)
     userInfo.userAcc = msg.userAcc
     userInfo.nickName = msg.nickName
     local sceneInfo = sceneMap.setScene(msg.uid,msg.sceneName,userInfo)
+    return "EnterSceneRet",{}
 end
 
 function command.BroadCast(name,msg)
@@ -72,7 +73,9 @@ function command.broadCast(uid,head,msg)
     sc:broadCast(head,msg)
 end
 
-
+function command.start()
+    sceneMap.init()
+end
 
 
 skynet.start(function()

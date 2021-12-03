@@ -10,26 +10,19 @@ local CODE = {
     MOVE = "move",
     ATK = "atk"
 }
-
+module.monsterMap = monsterMap
 module.CODE = CODE
 
 
 
-function module.new(nav,num)
-    for k = 1,num do
-        local role = {}
-        monsterMap[k] = role
-        role.model = model.new(nav,posSet,k)
-        role.tree = treeApi.new("monster",role.model)
-        function role:update(code,msg)
-            if code == CODE.MOVE then
-                
-            elseif code == CODE.ATK then
-
-            end
-        end
-    end
-    return monsterMap
+function module.new(nav,num,pos)
+    local role = {}
+    monsterMap[#monsterMap + 1] = role
+    role.model = model.new(nav,posSet,k)
+    role.tree = treeApi.new("monster",role.model)
+    vec3.copy(role.model.param.pos,pos)
+    vec3.copy(role.model.param.bornPos,pos)
+    role.model.param.id = #monsterMap
 end
 
 -- 状态更新

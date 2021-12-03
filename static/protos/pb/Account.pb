@@ -1,14 +1,15 @@
 
-º
+Ñ
 Account.proto"@
 LoginReq
 user_acc (	RuserAcc
-user_pwd (	RuserPwd"j
+user_pwd (	RuserPwd"€
 LoginRet
 code (Rcode
 info (	Rinfo
 user_acc (	RuserAcc
-	nick_name (	RnickName"`
+	nick_name (	RnickName
+scene (	Rscene"`
 RegisterReq
 user_acc (	RuserAcc
 user_pwd (	RuserPwd

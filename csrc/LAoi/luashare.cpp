@@ -8,7 +8,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-
+#include <cassert>
 
 using namespace std;
 extern "C"
@@ -80,6 +80,7 @@ static void message(void *ud, uint32_t watcher, uint32_t marker,int flag) {
 	//
 	//}
 	//lua_rawgeti(sc->L, LUA_REGISTRYINDEX, sc->lcb);
+	assert(sc->L != NULL);
 	lua_rawgeti(sc->L, LUA_REGISTRYINDEX, sc->lcb);
 	lua_pushinteger(sc->L, watcher);
 	lua_pushinteger(sc->L, marker);
@@ -154,7 +155,7 @@ static int remove(lua_State* L) {
 	SCENE* sc = (SCENE*)lua_touserdata(L, 1);
 	int index = luaL_checkinteger(L, 2);
 	OBJECT& item = sc->items[index];
-	item.flag = 0;
+	//item.flag = 0;
 	
 	return 0;
 }

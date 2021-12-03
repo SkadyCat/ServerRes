@@ -19,6 +19,13 @@ message QryScenePlayerRet{
     repeated int32 ids = 1;
 }
 
+message HurtModel{
+    int32 hurtValue = 1;
+    int32 hurtType = 2;
+}
+
+
+
 message EnterSceneReq {
     string sceneName = 1;//进入场景名
     string nickName = 2;

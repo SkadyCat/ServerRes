@@ -11,8 +11,13 @@ function module.onEnterScene(uid)
     local uInfo = sc:getUser(uid).userInfo
     local user_acc = uInfo.userAcc
     local info = mysql.query("sceneEvent","select",user_acc)
-    -- ,uInfo.pos.x,uInfo.pos.y,uInfo.pos.z
-    return info[1]
+    return info[1],points
+end
+
+function module.getPoints()
+    local sc = module.sc
+    local points = mysql.query("eqsEvent","selectAll",sc.sceneName)
+    return points
 end
 
 function module.onLeaveScene(uid)

@@ -70,5 +70,5 @@ function module.getScene(uid)
     end
     return sceneMap[sceneName]
 end
-module.init()
+-- module.init()
 return module

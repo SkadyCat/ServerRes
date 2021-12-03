@@ -13,6 +13,7 @@ local function init()
     register("Statu")
     register("Bag")
     register("Monster")
+    register("Eqs")
 end
 init()
 

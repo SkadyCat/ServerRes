@@ -1,0 +1,36 @@
+syntax = "proto3";
+option csharp_namespace = "Message.Eqs";
+
+message EqsItem{
+    string scene = 1;
+    int32 type = 2;
+    float x = 3;
+    float y = 4;
+    float z = 5;
+    int32 main_index = 6;
+}
+message EqsInsertReq{
+    EqsItem item = 1;
+}
+
+message EqsInsertRet{
+    int32 code = 1;
+    EqsItem item = 2;
+}
+message EqsSelectAllReq{
+    string scene = 1;
+}
+message EqsSelectAllRet{
+    repeated EqsItem items = 1;
+}
+
+message EqsDeleteReq{
+    int32 main_index = 1;
+}
+message EqsDeleteRet{
+    int32 main_index = 1;
+    int32 code = 2;
+}
+
+
+

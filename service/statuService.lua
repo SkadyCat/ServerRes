@@ -27,6 +27,10 @@ function command.init(uid)
 
 end
 
+function command.onRegister(uid)
+    
+end
+
 function command.onEnterScene(uid,players)
     local role = statuMap.get(uid)
     local tp = {

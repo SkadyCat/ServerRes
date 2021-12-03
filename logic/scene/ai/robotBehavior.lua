@@ -11,8 +11,8 @@ local command = {}
 local next = false
 local back = true
 local deltaTime = 0.1
-local dstGap = 1.1
-local atkRange = 30
+local dstGap =2
+local atkRange = 20
 local maxCD = 2
 
 
@@ -29,31 +29,18 @@ local function slowdownProcess(sc,param,slowdown)
     end
 end
 
-local function hurtProcess(sc,param,crit,hurt,posSet)
-    param.hp = param.hp - hurt
-    if param.hp <= 0 then
-        param.isDead = true
-        param.deadTime = 10
-        param.pos = posSet:random()
-        sc:broadCast("MonsterDeadRet",{id = param.id,pos = param.pos})
-        return
-    end
-    local hurtType = 0
-    if crit >0 then
-        hurtType = 1
-    end
-    local rInfo = {
-        id = param.id,
-        hp = param.hp,
-        maxHp = param.maxHp,
-        hurtType = hurtType,
-        hurtVal = hurt
-    }
-    sc:broadCast("MonsterHpRet",rInfo)
+local function hurtProcess(sc,param,crit,hurt,posSet,msg,skillModel)
+    local hurtModel = msg.model
+    hurt = hurtModel.hurtValue
+    hurtModel.skill = msg.skill
+    -- param.hp = param.hp - hurtModel.hurtValue
+    table.insert(param.hurtTB,hurtModel)
+
+    
 end
 
 local function hateProcess(param,hateId)
-    param.atkGap = 0.2
+    -- param.atkGap = 0.2
     param.hateMap[hateId] = 1
     param.hateID = hateId
 end
@@ -79,6 +66,7 @@ function command.aoi(rb,msg)
     local sc = rb.scene
     param.hateMap[msg.marker] = msg.flag
     if msg.flag == 1 then
+        -- print("player enter...")
         param.hateID = msg.marker
         param.speed = param.maxSpeed
     -- else
@@ -87,7 +75,6 @@ function command.aoi(rb,msg)
 end
 
 function command.playerEvent(rb,msg)
-
     local param = rb.param
     local sc = rb.scene
     local skillInfo = skillConfig:get(msg.skill)
@@ -98,13 +85,21 @@ function command.playerEvent(rb,msg)
     local hurt = baseHurt*(1+crit)
 
     slowdownProcess(sc,param,slowdown)
-    hurtProcess(sc,param,crit,hurt,rb.posSet)
+    hurtProcess(sc,param,crit,hurt,rb.posSet,msg,skillInfo)
     hateProcess(param,msg.uid)
 end
 function command.userLeave(rb,msg)
-    print("user leave...")
+    -- print("user leave...")
     userLeaveEvent(rb,msg)
 end
+
+local function hurtModel(hp,uid)
+    local v = {}
+    v.hp = hp
+    v.uid = uid
+    return v
+end
+
 function module.new(scene,posSet,id)
     local rb = {}
     rb.scene = scene
@@ -117,18 +112,18 @@ function module.new(scene,posSet,id)
         paths = nil,
         speed = 0.4,
         maxSpeed = 0.4,
-
+        bornPos = {x = 0,y = 0,z = 0},
         index = 1,
         id = id,
         playerPos = {x = 0,y = 0,z = 0},
         atkGap = -0.1,
         hateMap = {},
         isStop = false,
-        maxHp = 200,
-        hp = 200,
+        maxHp = 1000,
+        hp = 1000,
         isDead = false,
         deadTime = 0,
-
+        hurtTB = {},
         slowdown = 0,
         slowdownTime = 0,
     }
@@ -164,9 +159,8 @@ function module.new(scene,posSet,id)
         return back
     end
     function rb:relive()
-        print("重生")
         self.param.isDead = false
-        self.param.pos = self.posSet:random()
+        self.param.pos = self.param.bornPos
         self.scene:updateAoi(self.param.id)
         local param = self.param
         self.scene:broadCast("MonsterReliveRet",{id = param.id,pos = param.pos})
@@ -204,9 +198,9 @@ function module.new(scene,posSet,id)
         return back
     end
     function rb:Log()
-
-        -- print("speed : "..self.param.speed.." "..self.param.slowdownTime)
-
+        -- print("log")
+        -- -- print("speed : "..self.param.speed.." "..self.param.slowdownTime)
+        return next
     end
     function rb:setSpeed()
         if self.param.speed ~= self.param.maxSpeed * self.param.slowdown then
@@ -223,19 +217,74 @@ function module.new(scene,posSet,id)
         return next
     end
 
+
+    -- 被攻击模块
+    function rb:detectHurt()
+        local param = self.param
+        if #param.hurtTB > 0 then
+
+            return next
+        end
+        return back
+    end
+    function rb:hurtProcess()
+        local param = self.param
+        local sc = self.scene
+        print("#"..#param.hurtTB)
+        for k,v in pairs(param.hurtTB) do
+            param.hp = param.hp - v.hurtValue
+            if param.hp <= 0 then
+                param.isDead = true
+                param.deadTime = 10
+                sc:broadCast("MonsterDeadRet",{id = param.id,pos = param.pos})
+                break
+            end
+            local hurtType = v.hurtType
+            local rInfo = {
+                id = param.id,
+                hp = param.hp,
+                maxHp = param.maxHp,
+                hurtType = hurtType,
+                hurtVal = v.hurtValue,
+                skill = v.skill
+            }
+            sc:broadCast("MonsterHpRet",rInfo)
+        end
+        param.hurtTB = {}
+    end
+
     function rb:update(msg)
         command[msg.code](rb,msg.value)
     end
     function rb:updatePlayerPos()
         local param = self.param
-        if self.scene.playerMap[param.hateID] == nil then
-            return
+        self.param.dst = {}
+        vec3.copy(self.param.dst,self.scene.playerMap[param.hateID].pos)
+        return next
+    end
+
+    function rb:judgeDis()
+        local param = self.param
+        if vec3.dis(param.pos,param.dst) > atkRange then
+            return next
         end
-        vec3.copy(param.playerPos,self.scene.playerMap[param.hateID].pos)
+        return back
+    end
+    function rb:clearHate()
+        print("清空仇恨")
+        local param = self.param
+        param.hateID = 0
+        param.hateMap = {}
+        local info = {}
+        info.id = param.id
+
+        self.scene:broadCast("MonsterStopRet",info)
+        return back
     end
     function rb:lowOffset()
         local param = self.param
-        if vec3.dis(param.dst,param.playerPos) < 1 then
+        if vec3.dis(param.dst,param.dst) < 1 then
+            
             return next
         end
         return back
@@ -243,10 +292,14 @@ function module.new(scene,posSet,id)
 
     function rb:moreOffset()
         local param = self.param
-        if vec3.dis(param.dst,param.playerPos) > 1 then
+        if vec3.dis(param.pos,param.dst) > dstGap then
             return next
         end
         return back
+    end
+    function rb:doNext()
+        -- print("继续")
+        return next
     end
     function rb:updateAtkPos()
         local param = self.param
@@ -261,7 +314,6 @@ function module.new(scene,posSet,id)
         return back
     end
     function rb:haveHate()
-
         if self.param.hateID ~= 0 then
             return next
         end
@@ -313,12 +365,14 @@ function module.new(scene,posSet,id)
 
     function rb:haveDst()
         if self.param.dst ~= nil then
+            
             return next
         end
         return back
     end
     function rb:detectCD()
         local param = self.param
+        -- print("检测cd："..param.CD)
         if param.CD <= 0 then
             return next
         end
@@ -344,6 +398,7 @@ function module.new(scene,posSet,id)
 
     function rb:moreAtkRange()
         local pr = self.param
+        -- print("攻击范围："..vec3.dis(pr.pos,pr.dst))
         if vec3.dis(pr.pos,pr.dst)>atkRange then
             return next
         end
@@ -351,7 +406,9 @@ function module.new(scene,posSet,id)
     end
 
     function rb:hateEnd()
+        -- print("超出攻击范围，仇恨结束")
         userLeaveEvent(rb,self.param.hateID)
+        return next
     end
     function rb:isNotAtking()
         if self.param.atkGap > 0 then
@@ -368,13 +425,13 @@ function module.new(scene,posSet,id)
     end
     function rb:flushAtkGap()
         self.param.atkGap = self.param.atkGap - deltaTime
-        return next
     end
     function rb:noArriveDst()
         local pr = self.param
         if pr.pos == nil then
             pr.pos = pr.dst
         end
+        -- print("dis = "..vec3.dis(pr.pos,pr.dst))
         if vec3.dis(pr.pos,pr.dst)>dstGap then
             return next
         end
@@ -383,7 +440,7 @@ function module.new(scene,posSet,id)
     local lastPos = vec3.new(0,0,0)
     function rb:goDst()
         if self.param.hateID ~= 0 then
-            print("hate id = "..self.param.hateID)
+            -- print("hate id = "..self.param.hateID)
         end
         if #self.param.paths == 0 then
             return
@@ -400,15 +457,20 @@ function module.new(scene,posSet,id)
     end
     function rb:pathMove()
         local pr = self.param
+        if pr.paths[pr.index] == nil then
+            return
+        end
         pr.pos = pr.paths[pr.index]
         pr.index = pr.index+1
         local msg = {id = pr.id,pos = pr.pos}
+        -- print("path move...")
         scene:broadCast("MonsterPosRet",msg)
+        return next
     end
     function rb:goPlayer()
         local pr = self.param
         if pr.paths[pr.index] == nil then
-            return back
+            return
         end
         pr.pos = pr.paths[pr.index]
         pr.index = pr.index+1
@@ -418,7 +480,8 @@ function module.new(scene,posSet,id)
     end
     function rb:arriveDst()
         local pr = self.param
-        if vec3.dis(pr.pos,pr.dst) < dstGap*2 then
+        -- print("arriveDst: "..vec3.dis(pr.pos,pr.dst) )
+        if vec3.dis(pr.pos,pr.dst) < dstGap*1.3 then
             return next
         end
         return back

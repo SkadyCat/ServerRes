@@ -12,7 +12,7 @@ local mysql = require "mysql/mysqlHelp"
 local module = {}
     function module.new(sceneName)
         local scene = {}
-        scene.sceneName = scene
+        scene.sceneName = sceneName
         scene.playerMap = {}
         scene.broadCastMap = {}
         scene.nav = navApi.new(sceneName)
@@ -28,6 +28,7 @@ local module = {}
             
             -- 从数据库中获取玩家在场景中的位置信息
             local info = mysql.query("sceneEvent","select",uInfo.userInfo.userAcc)[1]
+
 
             -- print(json.encode(info))
             uInfo.pos.x = info.x
@@ -59,11 +60,22 @@ local module = {}
            
         end
         function scene:init()
+            
+
+            local points = self.queryApi.getPoints()
+            
+            for k = 1,#points do
+                local v = points[k]
+                local pos = vec3.new(v.x,v.y,v.z)
+                robot.new(scene,k,pos)
+            end
+            self.monsterMap = robot.monsterMap
             -- 获取场景的怪物信息
             for k,v in pairs(self.monsterMap) do
                 v.aoiIndex =  self.aoi.add("w",v.model.param.pos.x,v.model.param.pos.z)
                 self.aoiMap[v.aoiIndex] = {id = k,type = "monster"}
             end
+
         end
 
         function scene:getUser(uid)
@@ -157,7 +169,6 @@ local module = {}
                 v.watcherType = scene.aoiMap[w].type
                 v.markerType = scene.aoiMap[m].type
                 scene:broadCast("AoiRet",v)
-
                 local msg = {code = "aoi",value = v}
                 if scene.aoiMap[w].type == "monster" then
                     robot.update(scene.aoiMap[w].id,msg)
@@ -165,7 +176,7 @@ local module = {}
             end
             scene.aoi.msgQueue = {}
         end
-        scene.monsterMap = robot.new(scene,1)
+        
         timer.start(scene.update,10)
         return scene
     end

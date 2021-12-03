@@ -14,73 +14,46 @@ SEQ:AI
         CON:减速时间小于0:slowDownTimeLowerZero
         ACT:恢复移动速度:recoverSpeed
         ACT:更新路径:findPath
-    ACT:日志:Log
-    SEL:巡逻
-        CON:死亡状态中:isNotDeading
-        SEQ:原地待机
-            SEL:寻找路径
-                CON:没有仇恨:noHate
-                CON:有目标点:haveDst
-                CON:没有路径:noPath
-                ACT:寻找路径:findPath
-                ACT:移动到目标点:goDst
-            SEL:前往目标点
-                CON:没有仇恨:noHate
-                CON:有目标点:haveDst
-                CON:有路径:havePath
-                CON:没有接近目标点:noArriveDst
-                ACT:移动到目标点:goDst
-            SEL:寻找新的目标点
-                CON:没有仇恨:noHate
-                CON:有目标点:haveDst
-                CON:到达目标点:arriveDst
-                ACT:移除之前的路径:clearPath
-                ACT:随便找一个目标点:findRandomDst
-            SEL:随便获取一个目标点
-                CON:没有仇恨:noHate
-                CON:没有目标点:noDst
-                ACT:随便找一个目标点:findRandomDst
     SEL:攻击玩家
         CON:没死:isNotDeading
         CON:允许移动:allowMove
-        SEQ:攻击玩家
-            SEL:更新玩家位置
-                CON:在攻击中:isNotAtking
-                CON:拥有仇恨:haveHate
-                ACT:更新位置:updatePlayerPos
-            SEL:追踪
-                CON:在攻击中:isNotAtking
-                CON:拥有仇恨:haveHate
+        CON:不在攻击中:isNotAtking
+        CON:拥有仇恨:haveHate
+        SEL:攻击玩家
+            SEQ:玩家位置个更新
+                SEL:更新玩家位置
+                    ACT:更新位置:updatePlayerPos
+                    CON:判断距离:judgeDis
+                    ACT:清空仇恨:clearHate
+                ACT:日志:Log
+                ACT:继续:doNext
+            SEL:追踪过程
                 CON:存在目标点:haveDst
-                CON:没有超过寻路偏差:lowOffset
-                CON:没有接近目标点:noArriveDst
-                ACT:移动到目标点:goPlayer
-            SEL:更新路径
-                CON:在攻击中:isNotAtking
-                CON:拥有仇恨:haveHate
-                CON:存在目标点:haveDst
-                CON:超过寻路偏差:moreOffset
-                ACT:更新DST:updateAtkPos
-                ACT:更新路径:findPath
-                ACT:移动到目标点:pathMove
-            SEL:攻击玩家
-                CON:在攻击中:isNotAtking
-                CON:拥有仇恨:haveHate
-                CON:存在目标点:haveDst
-                CON:到达目标点:arriveDst
-                CON:CD<=0:detectCD
-                ACT:攻击玩家:atkPlayer
-            SEL:刷新CD
-                CON:CD>0:inCD
-                ACT:刷新CD:flushCD
-            SEL:结束攻击
-                CON:在攻击中:isNotAtking
-                CON:拥有仇恨:haveHate
-                CON:超出攻击范围:moreAtkRange
-                ACT:仇恨结束:hateEnd
-    SEL:刷新ATKGAP
-        CON:在攻击状态中:isAtking
+                SEQ:追踪
+                    SEL:更新路径
+                        CON:超过寻路偏差:moreOffset
+                        ACT:更新路径:findPath
+                        ACT:移动到目标点:pathMove
+                    SEL:追踪
+                        CON:没有接近目标点:noArriveDst
+                        ACT:移动到目标点:goPlayer
+                    ACT:继续:doNext
+                SEL:攻击玩家
+                    ACT:日志:Log
+                    CON:到达目标点:arriveDst
+                    CON:CD<=0:detectCD
+                    ACT:攻击玩家:atkPlayer
+                SEL:结束攻击
+                    CON:超出攻击范围:moreAtkRange
+                    ACT:仇恨结束:hateEnd
+    SEL:被攻击
+        CON:检测伤害数据:detectHurt
+        CON:伤害处理:hurtProcess
+        
+    SEQ:刷新ATKGAP
+        ACT:刷新攻击间隔:flushCD
         ACT:刷新攻击间隔:flushAtkGap
+        
 
     
     

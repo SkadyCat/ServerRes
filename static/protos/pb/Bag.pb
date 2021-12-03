@@ -3,8 +3,8 @@
 	Bag.proto"E
 BagCode
 BAG_SUCCESS (R
-BAGSUCCESS
-BAG_FAIL (RBAGFAIL"j
+bAGSUCCESS
+BAG_FAIL (RbAGFAIL"j
 BagGridInfo
 item_id (RitemId
 grid_id (RgridId
