@@ -23,9 +23,11 @@ local command = {}
 command.msgQueue = {}
 
 local function callBack(watcher,marker,flag)
-
     if flags[hash(watcher)] == nil then
         return
+    end
+    if flag == -1 then
+        return 
     end
     if flag == 1 then
         if  flags[hash(watcher)][hash(marker)] == false or  flags[hash(watcher)][hash(marker)] == nil then
@@ -46,9 +48,11 @@ local function callBack(watcher,marker,flag)
 
 end
 
+
+
 function command.init(sc)
     space = aoi.new()
-    aoi.cb(space,callBack)
+    -- aoi.cb(space,callBack)
     scene = sc
 end
 
@@ -73,7 +77,9 @@ function command.update(id,x,y)
         return
     end
     -- print("update,,,"..id)
-    aoi.update(space,id,x,y)
+    local w,m,f = aoi.update(space,id,x,y)
+    callBack(w,m,f)
+
 end
 
 

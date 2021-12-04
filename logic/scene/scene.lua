@@ -64,7 +64,7 @@ local module = {}
 
             local points = self.queryApi.getPoints()
             
-            for k = 1,#points do
+            for k = 1,1 do
                 local v = points[k]
                 local pos = vec3.new(v.x,v.y,v.z)
                 robot.new(scene,k,pos)

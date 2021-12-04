@@ -8,7 +8,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <cassert>
+
 
 using namespace std;
 extern "C"
@@ -50,6 +50,7 @@ struct OBJECT {
 	int flag = 0;
 };
 
+
 struct SCENE
 {
 	alloc_cookie cookie = { 0,0,0 };
@@ -58,6 +59,10 @@ struct SCENE
 	lua_State* L;
 	int lcb;
 };
+static int _watcher;
+static int _marker;
+static int _flag;
+
 
 static void message(void *ud, uint32_t watcher, uint32_t marker,int flag) {
 	//printf("%u (%f,%f) => %u (%f,%f)\n",
@@ -80,12 +85,13 @@ static void message(void *ud, uint32_t watcher, uint32_t marker,int flag) {
 	//
 	//}
 	//lua_rawgeti(sc->L, LUA_REGISTRYINDEX, sc->lcb);
-	assert(sc->L != NULL);
-	lua_rawgeti(sc->L, LUA_REGISTRYINDEX, sc->lcb);
-	lua_pushinteger(sc->L, watcher);
-	lua_pushinteger(sc->L, marker);
-	lua_pushinteger(sc->L, flag);
-	lua_call(sc->L, 3, 0);
+
+	_watcher = watcher;
+	_marker = marker;//lua_rawgeti(sc->L, LUA_REGISTRYINDEX, sc->lcb);
+	_flag = flag;//lua_pushinteger(sc->L, watcher);
+	//lua_pushinteger(sc->L, marker);
+	//lua_pushinteger(sc->L, flag);
+	//lua_call(sc->L, 3, 0);
 	
 }
 
@@ -145,18 +151,22 @@ static int update(lua_State * L) {
 	item.pos[0] = x;
 	item.pos[1] = y;
 	item.pos[2] = 0;
+	_flag = -1;
 	//cout<<"pos:"<<x<<","<<y<<endl;
 	aoi_update(sc->space, index, item.mode, item.pos);
 	aoi_message(sc->space, message, sc);
-
-	return 0;
+	lua_pushinteger(L, _watcher);
+	lua_pushinteger(L, _marker);
+	lua_pushinteger(L, _flag);
+	return 3;
 }
 static int remove(lua_State* L) {
 	SCENE* sc = (SCENE*)lua_touserdata(L, 1);
 	int index = luaL_checkinteger(L, 2);
 	OBJECT& item = sc->items[index];
-	//item.flag = 0;
-	
+	item.flag = 0;
+	const char* v = "d";
+	strcpy(item.mode, v);
 	return 0;
 }
 

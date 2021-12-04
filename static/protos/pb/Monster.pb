@@ -1,9 +1,11 @@
 
-þ
-Monster.protoScene.proto"3
+®
+Monster.protoScene.proto"c
 MonsterAtkRet
 id (Rid
-type (Rtype"]
+type (Rtype
+aimID (RaimID
+aimType (RaimType"]
 PlayerAtkMonsterReq
 id (Rid
 skill (Rskill 

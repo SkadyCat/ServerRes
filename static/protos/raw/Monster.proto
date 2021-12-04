@@ -6,6 +6,8 @@ import "Scene.proto";
 message MonsterAtkRet{
     int32 id = 1;
     int32 type = 2;
+    int32 aimID = 3;
+    int32 aimType = 4;
 }
 
 message PlayerAtkMonsterReq{

@@ -47,3 +47,14 @@ SEL:约会
                 CON:没有仇恨:noHate
                 CON:没有目标点:noDst
                 ACT:随便找一个目标点:findRandomDst
+
+
+                SEL:减速过程
+                CON:减速时间没有结束:notEndSlowDownTime
+                ACT:降低减速时间:cutSlowDownTime
+                ACT:设定速度:setSpeed
+                CON:存在目标点:haveDst
+                ACT:更新路径:findPath
+                CON:减速时间小于0:slowDownTimeLowerZero
+                ACT:恢复移动速度:recoverSpeed
+                ACT:更新路径:findPath

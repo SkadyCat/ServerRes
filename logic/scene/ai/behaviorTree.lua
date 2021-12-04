@@ -8,8 +8,26 @@ local EVALUATE_TYPE = {
 	CONDITIONAL = "CON",
 	BEHAVIOR    = "ACT",
 }
+function split(s, delim)
+    if type(delim) ~= "string" or string.len(delim) <= 0 then
+        return
+    end
 
+    local start = 1
+    local t = {}
+    while true do
+    local pos = string.find (s, delim, start, true) -- plain find
+        if not pos then
+          break
+        end
 
+        table.insert (t, string.sub (s, start, pos - 1))
+        start = pos + string.len (delim)
+    end
+    table.insert (t, string.sub (s, start))
+
+    return t
+end
 local table_insert = table.insert
 local table_remove = table.remove
 local string_upper = string.upper
@@ -266,7 +284,12 @@ function BehaviorTree:do_( tree, entity, typeStr )
     if entity[tree.fun] == nil then
         error("no fun = "..tree.fun)
     end
-	return entity[tree.fun](entity, tree.param)
+	local param = {}
+	if tree.param ~= nil then
+		param = split(tree.param, ",")
+	end
+	-- print(tostring(tree.param).."<<")
+	return entity[tree.fun](entity, param)
 end
 
 return BehaviorTree
